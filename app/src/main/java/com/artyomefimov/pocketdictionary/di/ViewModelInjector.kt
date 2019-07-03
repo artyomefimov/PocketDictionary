@@ -1,11 +1,11 @@
 package com.artyomefimov.pocketdictionary.di
 
-import com.artyomefimov.pocketdictionary.ui.TranslationViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.TranslationViewModel
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [NetworkModule::class])
+@Component(modules = [NetworkModule::class, StorageModule::class])
 interface ViewModelInjector {
     fun inject(translationViewModel: TranslationViewModel)
 
@@ -13,5 +13,6 @@ interface ViewModelInjector {
     interface Builder {
         fun build(): ViewModelInjector
         fun networkModule(networkModule: NetworkModule): Builder
+        fun storageModule(storageModule: StorageModule): Builder
     }
 }

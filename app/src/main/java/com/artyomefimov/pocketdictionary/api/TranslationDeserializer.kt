@@ -1,5 +1,6 @@
-package com.artyomefimov.pocketdictionary.model
+package com.artyomefimov.pocketdictionary.api
 
+import com.artyomefimov.pocketdictionary.model.Response
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

@@ -1,7 +1,6 @@
 package com.artyomefimov.pocketdictionary.api
 
 import com.artyomefimov.pocketdictionary.model.Response
-import com.artyomefimov.pocketdictionary.model.Translation
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query

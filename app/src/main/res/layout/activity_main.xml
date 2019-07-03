@@ -5,7 +5,7 @@
     <data>
         <variable
                 name="viewModel"
-                type="com.artyomefimov.pocketdictionary.ui.TranslationViewModel"/>
+                type="com.artyomefimov.pocketdictionary.viewmodel.TranslationViewModel"/>
     </data>
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

@@ -3,8 +3,7 @@ package com.artyomefimov.pocketdictionary.di
 import com.artyomefimov.pocketdictionary.BASE_URL
 import com.artyomefimov.pocketdictionary.api.TranslateApi
 import com.artyomefimov.pocketdictionary.model.Response
-import com.artyomefimov.pocketdictionary.model.Translation
-import com.artyomefimov.pocketdictionary.model.TranslationDeserializer
+import com.artyomefimov.pocketdictionary.api.TranslationDeserializer
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -30,7 +29,10 @@ object NetworkModule {
     internal fun provideRetrofit(): Retrofit {
         val gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .registerTypeAdapter(Response::class.java, TranslationDeserializer())
+            .registerTypeAdapter(
+                Response::class.java,
+                TranslationDeserializer()
+            )
             .create()
 
         return Retrofit.Builder()
