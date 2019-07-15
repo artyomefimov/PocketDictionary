@@ -5,7 +5,7 @@ import com.artyomefimov.pocketdictionary.di.DaggerViewModelInjector
 import com.artyomefimov.pocketdictionary.di.NetworkModule
 import com.artyomefimov.pocketdictionary.di.StorageModule
 import com.artyomefimov.pocketdictionary.di.ViewModelInjector
-import com.artyomefimov.pocketdictionary.viewmodel.TranslationViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.WordFragmentViewModel
 
 abstract class BaseViewModel: ViewModel(){
     private val injector: ViewModelInjector = DaggerViewModelInjector
@@ -23,7 +23,7 @@ abstract class BaseViewModel: ViewModel(){
      */
     private fun inject() {
         when (this) {
-            is TranslationViewModel -> injector.inject(this)
+            is WordFragmentViewModel -> injector.inject(this)
         }
     }
 
