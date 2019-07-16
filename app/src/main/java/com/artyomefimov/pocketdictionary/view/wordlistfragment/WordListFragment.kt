@@ -45,8 +45,7 @@ class WordListFragment : Fragment() {
         recycler_view_word_list.adapter = adapter
 
         fab_new_word.setOnClickListener {
-            viewModel.addWord()
-            viewModel.loadDictionary()
+
         }
 
         viewModel.loadDictionary()

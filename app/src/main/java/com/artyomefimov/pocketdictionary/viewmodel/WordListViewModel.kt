@@ -32,7 +32,6 @@ class WordListViewModel : ViewModel() {
     val errorMessage: MutableLiveData<Int> = MutableLiveData()
 
     fun loadDictionary() {
-        localStorage.readData()
         subscription = localStorage.loadDictionary()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -48,11 +47,6 @@ class WordListViewModel : ViewModel() {
                     loadingVisibility.value = View.GONE
                     errorMessage.value = R.string.request_error
                 })
-    }
-
-    fun addWord() {
-        localStorage.addDictionaryRecord(DictionaryRecord(("test word"), ArrayList<String>().apply { add("1") }))
-        localStorage.writeData()
     }
 
     override fun onCleared() {
