@@ -6,7 +6,10 @@ import android.arch.lifecycle.ViewModelProvider
 import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.api.TranslateApi
-import com.artyomefimov.pocketdictionary.base.BaseViewModel
+import com.artyomefimov.pocketdictionary.di.DaggerViewModelComponent
+import com.artyomefimov.pocketdictionary.di.NetworkModule
+import com.artyomefimov.pocketdictionary.di.StorageModule
+import com.artyomefimov.pocketdictionary.di.ViewModelComponent
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,8 +17,17 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class WordFragmentViewModel(private val dictionaryRecord: DictionaryRecord) :
-    BaseViewModel() { // todo implement vm for wordfragment
+class WordViewModel(private val dictionaryRecord: DictionaryRecord) : ViewModel() {
+    private val component: ViewModelComponent = DaggerViewModelComponent
+        .builder()
+        .networkModule(NetworkModule)
+        .storageModule(StorageModule)
+        .build()
+
+    init {
+        component.inject(this)
+    }
+
     @Inject
     lateinit var translateApi: TranslateApi
     @Inject
@@ -51,6 +63,6 @@ class WordFragmentViewModel(private val dictionaryRecord: DictionaryRecord) :
 
     class Factory(private val dictionaryRecord: DictionaryRecord) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-            WordFragmentViewModel(dictionaryRecord) as T
+            WordViewModel(dictionaryRecord) as T
     }
 }

@@ -2,6 +2,7 @@ package com.artyomefimov.pocketdictionary.storage
 
 import com.artyomefimov.pocketdictionary.LOCAL_STORAGE_PATH
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import io.reactivex.Observable
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
@@ -14,14 +15,14 @@ class LocalStorage @Inject constructor() {
         private const val NO_SUCH_WORD = "No such word"
     }
 
-    internal val localDictionaryRecords: MutableMap<String, MutableList<String>> = HashMap()
+    internal var localDictionaryRecords: MutableMap<String, MutableList<String>> = HashMap()
 
-    fun getDictionaryRecords(): List<DictionaryRecord> {
+    fun loadDictionary(): Observable<List<DictionaryRecord>> {
         val result = ArrayList<DictionaryRecord>()
         localDictionaryRecords.forEach {
             result.add(DictionaryRecord(it.key, it.value))
         }
-        return result
+        return Observable.just(result)
     }
 
     fun getDictionaryRecord(originalWord: String): DictionaryRecord {
@@ -70,8 +71,8 @@ class LocalStorage @Inject constructor() {
             it.writeObject(localDictionaryRecords)
         }
 
-    fun readData(): MutableMap<String, MutableList<String>> =
+    fun readData() =
         ObjectInputStream(FileInputStream(LOCAL_STORAGE_PATH)).use {
-            return it.readObject() as MutableMap<String, MutableList<String>>
+            localDictionaryRecords = it.readObject() as MutableMap<String, MutableList<String>>
         }
 }

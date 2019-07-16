@@ -1,21 +1,29 @@
 package com.artyomefimov.pocketdictionary.view
 
 import android.Manifest
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.FragmentManager
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.databinding.ActivityMainBindingImpl
-import com.artyomefimov.pocketdictionary.viewmodel.WordFragmentViewModel
-import kotlinx.android.synthetic.main.activity_main.*
+import com.artyomefimov.pocketdictionary.view.wordlistfragment.WordListFragment
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        supportFragmentManager.addOnBackStackChangedListener(this)
+
+        var listFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+
+        if (listFragment == null) {
+            listFragment = WordListFragment.newInstance()
+            supportFragmentManager.beginTransaction().apply {
+                add(R.id.fragment_container, listFragment)
+                commit()
+            }
+        }
 
         val permissions = arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -30,5 +38,19 @@ class MainActivity : AppCompatActivity() {
 //        if (requestCode == 123 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //            val s = ""
 //        }
+    }
+
+    override fun onBackStackChanged() {
+        isShouldDisplayHomeUp()
+    }
+
+    private fun isShouldDisplayHomeUp() {
+        val canGoBack = supportFragmentManager.backStackEntryCount > 0
+        supportActionBar?.setDisplayHomeAsUpEnabled(canGoBack)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        supportFragmentManager.popBackStack()
+        return false
     }
 }
