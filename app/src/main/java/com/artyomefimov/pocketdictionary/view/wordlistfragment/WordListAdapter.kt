@@ -8,7 +8,10 @@ import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import kotlinx.android.synthetic.main.list_item_word.view.*
 
-class WordListAdapter(var dictionaryRecords: List<DictionaryRecord>, private val listener: Listener) :
+class WordListAdapter(
+    var dictionaryRecords: List<DictionaryRecord>,
+    private val onItemClickAction: (dictionaryRecord: DictionaryRecord) -> Unit
+) :
     RecyclerView.Adapter<WordListAdapter.WordListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordListViewHolder {
@@ -21,22 +24,21 @@ class WordListAdapter(var dictionaryRecords: List<DictionaryRecord>, private val
         dictionaryRecords.size
 
     override fun onBindViewHolder(holder: WordListViewHolder, position: Int) =
-        holder.bind(dictionaryRecords[position], listener)
+        holder.bind(dictionaryRecords[position], onItemClickAction)
 
     class WordListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(dictionaryRecord: DictionaryRecord, listener: Listener) {
+        fun bind(
+            dictionaryRecord: DictionaryRecord,
+            onItemClickAction: (dictionaryRecord: DictionaryRecord) -> Unit
+        ) {
             with(itemView) {
                 original_word_list_item.text = dictionaryRecord.originalWord
                 translations_list_item.text = dictionaryRecord.translations[0]
 
                 setOnClickListener {
-                    listener.onClickItem(dictionaryRecord)
+                    onItemClickAction(dictionaryRecord)
                 }
             }
         }
-    }
-
-    interface Listener { // todo may ne replace with inline function with implementation in fragment
-        fun onClickItem(dictionaryRecord: DictionaryRecord)
     }
 }

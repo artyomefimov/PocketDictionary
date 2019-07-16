@@ -29,9 +29,8 @@ class WordListViewModel : ViewModel() {
     private lateinit var subscription: Disposable
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
-    val errorMessage: MutableLiveData<Int> = MutableLiveData()
 
-    fun loadDictionary() {
+    fun loadDictionary(errorAction: (message: Int) -> Unit) {
         subscription = localStorage.loadDictionary()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -45,7 +44,7 @@ class WordListViewModel : ViewModel() {
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    errorMessage.value = R.string.request_error
+                    errorAction(R.string.request_error)
                 })
     }
 

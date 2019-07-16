@@ -9,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.model.DictionaryRecord
-import com.artyomefimov.pocketdictionary.view.wordfragment.WordFragment
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
 
@@ -31,13 +29,13 @@ class WordListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
 
-        val adapter = WordListAdapter(ArrayList(), object : WordListAdapter.Listener {
-            override fun onClickItem(dictionaryRecord: DictionaryRecord) {
-                Toast.makeText(this@WordListFragment.activity,
-                    "Clicked ${dictionaryRecord.originalWord}", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        })
+        val adapter = WordListAdapter(ArrayList()) { dictionaryRecord ->
+            Toast.makeText( // todo call word fragment
+                this@WordListFragment.activity,
+                "Clicked ${dictionaryRecord.originalWord}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         viewModel.adapter = adapter
 
@@ -48,6 +46,12 @@ class WordListFragment : Fragment() {
 
         }
 
-        viewModel.loadDictionary()
+        viewModel.loadDictionary { errorMessage ->
+            Toast.makeText(
+                this@WordListFragment.activity,
+                errorMessage,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }

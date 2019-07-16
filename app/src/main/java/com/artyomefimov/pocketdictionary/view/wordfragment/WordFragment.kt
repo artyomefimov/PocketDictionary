@@ -13,7 +13,7 @@ import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.viewmodel.WordViewModel
 
-class WordFragment : Fragment() {
+class WordFragment : Fragment() { // todo implement properly
     companion object {
         @JvmStatic
         fun newInstance(dictionaryRecord: DictionaryRecord) = WordFragment().apply {

@@ -18,6 +18,7 @@ class LocalStorage @Inject constructor() {
     internal var localDictionaryRecords: MutableMap<String, MutableList<String>> = HashMap()
 
     fun loadDictionary(): Observable<List<DictionaryRecord>> {
+        readData() // todo move to worker thread
         val result = ArrayList<DictionaryRecord>()
         localDictionaryRecords.forEach {
             result.add(DictionaryRecord(it.key, it.value))
