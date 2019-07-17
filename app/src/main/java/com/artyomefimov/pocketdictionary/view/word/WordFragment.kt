@@ -1,6 +1,5 @@
-package com.artyomefimov.pocketdictionary.view.wordfragment
+package com.artyomefimov.pocketdictionary.view.word
 
-import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle

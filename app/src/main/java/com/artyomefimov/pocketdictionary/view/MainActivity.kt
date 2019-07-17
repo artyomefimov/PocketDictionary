@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.view.wordlistfragment.WordListFragment
+import com.artyomefimov.pocketdictionary.view.wordlist.WordListFragment
 
 class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 

@@ -22,7 +22,6 @@ open class LocalStorage @Inject constructor() {
 
     fun loadDictionary(): Single<List<DictionaryRecord>> {
         return Single.fromCallable {
-            Log.d("LocalStorage", Thread.currentThread().name)
             localDictionaryRecords = readDictionaryFromFile()
             return@fromCallable localDictionaryRecords.map {
                 DictionaryRecord(it.key, it.value)
