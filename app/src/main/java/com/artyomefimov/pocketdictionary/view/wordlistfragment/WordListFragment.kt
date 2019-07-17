@@ -47,7 +47,6 @@ class WordListFragment : Fragment() {
             onSuccessfulLoading = { receivedDictionary ->
                 (recycler_view_word_list.adapter as WordListAdapter).apply {
                     dictionaryRecords = receivedDictionary
-                    viewModel.dictionary = receivedDictionary
                     notifyDataSetChanged()
                 }
             },

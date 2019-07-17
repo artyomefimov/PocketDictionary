@@ -1,15 +1,18 @@
 package com.artyomefimov.pocketdictionary.storage
 
+import android.util.Log
 import com.artyomefimov.pocketdictionary.LOCAL_STORAGE_PATH
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
-import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import javax.inject.Inject
 
-class LocalStorage @Inject constructor() {
+open class LocalStorage @Inject constructor() {
 
     companion object {
         private const val NO_SUCH_WORD = "No such word"
@@ -17,13 +20,16 @@ class LocalStorage @Inject constructor() {
 
     internal var localDictionaryRecords: MutableMap<String, MutableList<String>> = HashMap()
 
-    fun loadDictionary(): Observable<List<DictionaryRecord>> {
-        readData() // todo move to worker thread
-        val result = ArrayList<DictionaryRecord>()
-        localDictionaryRecords.forEach {
-            result.add(DictionaryRecord(it.key, it.value))
+    fun loadDictionary(): Single<List<DictionaryRecord>> {
+        return Single.fromCallable {
+            Log.d("LocalStorage", Thread.currentThread().name)
+            localDictionaryRecords = readDictionaryFromFile()
+            return@fromCallable localDictionaryRecords.map {
+                DictionaryRecord(it.key, it.value)
+            }
         }
-        return Observable.just(result)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     fun getDictionaryRecord(originalWord: String): DictionaryRecord {
@@ -72,8 +78,8 @@ class LocalStorage @Inject constructor() {
             it.writeObject(localDictionaryRecords)
         }
 
-    fun readData() =
+    internal fun readDictionaryFromFile(): MutableMap<String, MutableList<String>> =
         ObjectInputStream(FileInputStream(LOCAL_STORAGE_PATH)).use {
-            localDictionaryRecords = it.readObject() as MutableMap<String, MutableList<String>>
+            return@use it.readObject() as MutableMap<String, MutableList<String>>
         }
 }
