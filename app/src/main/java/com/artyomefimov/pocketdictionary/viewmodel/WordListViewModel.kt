@@ -7,6 +7,7 @@ import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.di.*
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
+import com.artyomefimov.pocketdictionary.utils.DictionarySearchUtil
 import com.artyomefimov.pocketdictionary.view.wordlistfragment.WordListAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -25,12 +26,15 @@ class WordListViewModel : ViewModel() {
 
     @Inject
     lateinit var localStorage: LocalStorage
-    lateinit var adapter: WordListAdapter
+
+    var dictionary: List<DictionaryRecord> = ArrayList()
+
     private lateinit var subscription: Disposable
+    private val searchUtil = DictionarySearchUtil()
 
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
 
-    fun loadDictionary(errorAction: (message: Int) -> Unit) {
+    fun loadDictionary(onSuccessfulLoading: (List<DictionaryRecord>) -> Unit, onFailure: (message: Int) -> Unit) {
         subscription = localStorage.loadDictionary()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -39,13 +43,16 @@ class WordListViewModel : ViewModel() {
             .subscribe(
                 { dictionaryRecords ->
                     loadingVisibility.value = View.GONE
-                    adapter.dictionaryRecords = dictionaryRecords
-                    adapter.notifyDataSetChanged()
+                    onSuccessfulLoading(dictionaryRecords)
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    errorAction(R.string.request_error)
+                    onFailure(R.string.request_error)
                 })
+    }
+
+    fun findRecords(query: String?): List<DictionaryRecord> {
+        return searchUtil.search(query, dictionary)
     }
 
     override fun onCleared() {

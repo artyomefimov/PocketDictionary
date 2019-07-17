@@ -29,29 +29,34 @@ class WordListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
 
-        val adapter = WordListAdapter(ArrayList()) { dictionaryRecord ->
-            Toast.makeText( // todo call word fragment
-                this@WordListFragment.activity,
-                "Clicked ${dictionaryRecord.originalWord}",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        viewModel.adapter = adapter
-
         recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
-        recycler_view_word_list.adapter = adapter
+        recycler_view_word_list.adapter = WordListAdapter(ArrayList(),
+            onItemClickAction = { dictionaryRecord ->
+                Toast.makeText( // todo call word fragment
+                    this@WordListFragment.activity,
+                    "Clicked ${dictionaryRecord.originalWord}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            })
 
         fab_new_word.setOnClickListener {
 
         }
 
-        viewModel.loadDictionary { errorMessage ->
-            Toast.makeText(
-                this@WordListFragment.activity,
-                errorMessage,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        viewModel.loadDictionary(
+            onSuccessfulLoading = { receivedDictionary ->
+                (recycler_view_word_list.adapter as WordListAdapter).apply {
+                    dictionaryRecords = receivedDictionary
+                    viewModel.dictionary = receivedDictionary
+                    notifyDataSetChanged()
+                }
+            },
+            onFailure = { errorMessage ->
+                Toast.makeText(
+                    this@WordListFragment.activity,
+                    errorMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            })
     }
 }
