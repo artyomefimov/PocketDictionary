@@ -9,10 +9,15 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import kotlinx.android.synthetic.main.list_item_word.view.*
 
 class WordListAdapter(
-    var dictionaryRecords: List<DictionaryRecord>,
+    var dictionary: List<DictionaryRecord>,
     private val onItemClickAction: (dictionaryRecord: DictionaryRecord) -> Unit
 ) :
     RecyclerView.Adapter<WordListAdapter.WordListViewHolder>() {
+
+    fun updateDictionary(dictionaryRecords: List<DictionaryRecord>) {
+        this.dictionary = dictionaryRecords
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordListViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -21,10 +26,10 @@ class WordListAdapter(
     }
 
     override fun getItemCount(): Int =
-        dictionaryRecords.size
+        dictionary.size
 
     override fun onBindViewHolder(holder: WordListViewHolder, position: Int) =
-        holder.bind(dictionaryRecords[position], onItemClickAction)
+        holder.bind(dictionary[position], onItemClickAction)
 
     class WordListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(

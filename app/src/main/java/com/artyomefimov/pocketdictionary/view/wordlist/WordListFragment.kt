@@ -50,10 +50,8 @@ class WordListFragment : Fragment() {
 
         viewModel.loadDictionary(
             onSuccessfulLoading = { receivedDictionary ->
-                (recycler_view_word_list.adapter as WordListAdapter).apply {
-                    dictionaryRecords = receivedDictionary
-                    notifyDataSetChanged()
-                }
+                (recycler_view_word_list.adapter as WordListAdapter)
+                    .updateDictionary(receivedDictionary)
             },
             onFailure = { errorMessage ->
                 Toast.makeText(
@@ -70,13 +68,23 @@ class WordListFragment : Fragment() {
         val menuItem = menu?.findItem(R.id.action_search)
         val searchView = menuItem?.actionView as SearchView
 
+        menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                (recycler_view_word_list.adapter as WordListAdapter)
+                    .updateDictionary(viewModel.dictionary)
+                return true
+            }
+        })
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val result = viewModel.findRecords(query)
-                Log.d("WordListFragment", "received records: $result")
-                // todo fix search view layout(show on full action bar)
-                // todo hide search view if searching was cancelled
-                // todo think how to show search results
+                (recycler_view_word_list.adapter as WordListAdapter)
+                    .updateDictionary(result)
                 return true
             }
 

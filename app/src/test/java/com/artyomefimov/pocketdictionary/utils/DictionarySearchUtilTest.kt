@@ -11,10 +11,12 @@ class DictionarySearchUtilTest {
     private val word1 = DictionaryRecord("application")
     private val word2 = DictionaryRecord("applicable")
     private val word3 = DictionaryRecord("apply")
+    private val word4 = DictionaryRecord("my application")
     private val dictionary = ArrayList<DictionaryRecord>().apply {
         add(word1)
         add(word2)
         add(word3)
+        add(word4)
     }
 
     private val searchUtil = DictionarySearchUtil()
@@ -47,6 +49,11 @@ class DictionarySearchUtilTest {
     @Test
     fun testUpperCaseQueryReturnsSameResultAsLowerCase() {
         assertEquals(resultOfQuery("APPL"), resultOfQuery("appl"))
+    }
+
+    @Test
+    fun testQueryWithSpace() {
+        assertEquals(word4, resultOfQuery("my")[0])
     }
 
     private fun resultOfQuery(query: String?): List<DictionaryRecord> {
