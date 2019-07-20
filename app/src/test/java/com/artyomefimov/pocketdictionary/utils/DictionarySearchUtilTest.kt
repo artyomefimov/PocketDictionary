@@ -43,7 +43,7 @@ class DictionarySearchUtilTest {
 
     @Test
     fun testWordsThatContainSymbolsFromQueryNotFromStartAreNotIncludedInResult() {
-        assertEquals(0, resultOfQuery("ppl").size)
+        assertEquals(dictionary, resultOfQuery("ppl"))
     }
 
     @Test

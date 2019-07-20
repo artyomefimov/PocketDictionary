@@ -13,6 +13,6 @@ class DictionarySearchUtil {
     }
 
     private fun makeRegex(entry: String): String {
-        return "^${entry.toUpperCase()}+[A-Za-z ]*"
+        return "[A-Za-z ]*${entry.toUpperCase()}+[A-Za-z ]*"
     }
 }
