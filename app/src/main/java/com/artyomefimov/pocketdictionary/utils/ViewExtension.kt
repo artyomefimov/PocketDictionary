@@ -1,14 +1,16 @@
 package com.artyomefimov.pocketdictionary.utils
 
 import android.content.ContextWrapper
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.view.View
+import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.view.MainActivity
 
-fun View.getParentActivity(): AppCompatActivity?{
+fun View.getParentFragment(): Fragment? {
     var context = this.context
     while (context is ContextWrapper) {
-        if (context is AppCompatActivity) {
-            return context
+        if (context is MainActivity) {
+            return context.supportFragmentManager.findFragmentById(R.id.fragment_container)
         }
         context = context.baseContext
     }

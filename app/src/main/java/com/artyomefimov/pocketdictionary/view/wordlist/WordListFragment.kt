@@ -1,14 +1,15 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.arch.lifecycle.ViewModelProviders
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
 
@@ -21,18 +22,26 @@ class WordListFragment : Fragment() {
     }
 
     private lateinit var viewModel: WordListViewModel
+    private lateinit var binding: FragmentListWordsBindingImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_list_words, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_words, container, false)
+
+        binding.lifecycleOwner = this
+
+        viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
+        binding.viewModel = viewModel
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
 
         recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_word_list.adapter = WordListAdapter(ArrayList(),
@@ -57,13 +66,14 @@ class WordListFragment : Fragment() {
                 Toast.makeText(
                     this@WordListFragment.activity,
                     errorMessage,
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
             })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
+
         inflater?.inflate(R.menu.menu, menu)
         val menuItem = menu?.findItem(R.id.action_search)
         val searchView = menuItem?.actionView as SearchView

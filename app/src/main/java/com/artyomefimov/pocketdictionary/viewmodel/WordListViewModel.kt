@@ -26,14 +26,16 @@ class WordListViewModel : ViewModel() {
     @Inject
     lateinit var localStorage: LocalStorage
 
-    var dictionary: List<DictionaryRecord> = ArrayList()
-
     private lateinit var subscription: Disposable
     private val searchUtil = DictionarySearchUtil()
 
+    var dictionary: List<DictionaryRecord> = ArrayList()
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
 
-    fun loadDictionary(onSuccessfulLoading: (List<DictionaryRecord>) -> Unit, onFailure: (message: Int) -> Unit) {
+    fun loadDictionary(
+        onSuccessfulLoading: (List<DictionaryRecord>) -> Unit,
+        onFailure: (message: Int) -> Unit) {
+
         subscription = localStorage.loadDictionary()
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
