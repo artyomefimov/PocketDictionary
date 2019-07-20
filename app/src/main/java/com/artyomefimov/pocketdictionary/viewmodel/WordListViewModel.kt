@@ -9,7 +9,7 @@ import com.artyomefimov.pocketdictionary.di.StorageModule
 import com.artyomefimov.pocketdictionary.di.ViewModelComponent
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
-import com.artyomefimov.pocketdictionary.utils.DictionarySearchUtil
+import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 

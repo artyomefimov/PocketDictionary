@@ -6,36 +6,47 @@
                 name="viewModel"
                 type="com.artyomefimov.pocketdictionary.viewmodel.WordViewModel"/>
     </data>
-    <android.support.constraint.ConstraintLayout
+    <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="4dp">
 
-        <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:mutableVisibility="@{viewModel.getLoadingVisibility()}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-        <EditText
-                android:id="@+id/original_word_edit_text"
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                app:originalWord="@{viewModel.getOriginalWord()}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/translations_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/original_word_edit_text"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-    </android.support.constraint.ConstraintLayout>
+            <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:mutableVisibility="@{viewModel.getLoadingVisibility()}"
+                    android:layout_centerInParent="true"/>
+
+            <EditText
+                    android:id="@+id/original_word_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="43dp"
+                    android:inputType="text"
+                    android:padding="4dp"
+                    android:layout_centerHorizontal="true"/>
+
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_translations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/original_word_text"/>
+
+            <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_add_translation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    app:srcCompat="@drawable/ic_add_word"/>
+
+        </RelativeLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

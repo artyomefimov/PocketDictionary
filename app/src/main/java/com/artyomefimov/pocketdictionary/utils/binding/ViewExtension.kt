@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.utils
+package com.artyomefimov.pocketdictionary.utils.binding
 
 import android.content.ContextWrapper
 import android.support.v4.app.Fragment

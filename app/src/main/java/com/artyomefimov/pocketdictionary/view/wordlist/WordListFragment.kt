@@ -10,6 +10,9 @@ import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
+import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.view.MainActivity
+import com.artyomefimov.pocketdictionary.view.word.WordFragment
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
 
@@ -27,16 +30,14 @@ class WordListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_words, container, false)
 
         binding.lifecycleOwner = this
-
-        viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
         binding.viewModel = viewModel
-
         return binding.root
     }
 
@@ -45,17 +46,9 @@ class WordListFragment : Fragment() {
 
         recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_word_list.adapter = WordListAdapter(ArrayList(),
-            onItemClickAction = { dictionaryRecord ->
-                Toast.makeText( // todo call word fragment
-                    this@WordListFragment.activity,
-                    "Clicked ${dictionaryRecord.originalWord}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            })
+            onItemClickAction = { dictionaryRecord -> openWordFragmentFor(dictionaryRecord) })
 
-        fab_new_word.setOnClickListener {
-
-        }
+        fab_new_word.setOnClickListener { openWordFragmentFor(DictionaryRecord()) }
 
         viewModel.loadDictionary(
             onSuccessfulLoading = { receivedDictionary ->
@@ -69,6 +62,13 @@ class WordListFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             })
+    }
+
+    private fun openWordFragmentFor(dictionaryRecord: DictionaryRecord) {
+        if (this.activity != null) {
+            val mainActivity = this.activity as MainActivity
+            mainActivity.replaceFragment(WordFragment.newInstance(dictionaryRecord))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

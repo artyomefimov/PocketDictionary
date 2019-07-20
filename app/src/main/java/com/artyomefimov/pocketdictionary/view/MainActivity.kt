@@ -3,6 +3,7 @@ package com.artyomefimov.pocketdictionary.view
 import android.Manifest
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.view.wordlist.WordListFragment
@@ -38,6 +39,14 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
 //        if (requestCode == 123 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //            val s = ""
 //        }
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_container, fragment)
+            addToBackStack(null)
+            commit()
+        }
     }
 
     override fun onBackStackChanged() {

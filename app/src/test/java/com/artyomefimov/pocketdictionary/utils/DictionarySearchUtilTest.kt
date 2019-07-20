@@ -1,8 +1,8 @@
 package com.artyomefimov.pocketdictionary.utils
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
 import org.junit.Assert.assertEquals
-import org.junit.Before
 
 import org.junit.Test
 

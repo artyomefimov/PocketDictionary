@@ -1,6 +1,6 @@
 package com.artyomefimov.pocketdictionary
 
-import android.os.Environment
+import com.artyomefimov.pocketdictionary.utils.EnvironmentHelper
 
 const val BASE_URL = "https://api.mymemory.translated.net"
-val LOCAL_STORAGE_PATH = "${Environment.getExternalStorageDirectory().absolutePath}/pocketdictionary.backup"
+val LOCAL_STORAGE_PATH = "${EnvironmentHelper.getExternalStorageDirectory()}/pocketdictionary.backup"

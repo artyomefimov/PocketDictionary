@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.utils
+package com.artyomefimov.pocketdictionary.utils.search
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
