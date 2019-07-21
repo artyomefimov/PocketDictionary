@@ -1,8 +1,6 @@
 package com.artyomefimov.pocketdictionary.view.word
 
 import android.support.v7.widget.RecyclerView
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +9,7 @@ import kotlinx.android.synthetic.main.list_item_translation.view.*
 
 class TranslationsAdapter(
     private var translations: List<String>,
-    private val onTranslationChanged: (s: String, position: Int) -> Unit
+    private val onItemClicked: (translation: String, position: Int) -> Unit
 ) :
     RecyclerView.Adapter<TranslationsAdapter.TranslationsViewHolder>() {
 
@@ -30,7 +28,7 @@ class TranslationsAdapter(
         translations.size
 
     override fun onBindViewHolder(holder: TranslationsViewHolder, position: Int) =
-        holder.bind(translations[position], position, onTranslationChanged)
+        holder.bind(translations[position], position, onItemClicked)
 
     class TranslationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(
@@ -39,16 +37,10 @@ class TranslationsAdapter(
             onTranslationChanged: (translation: String, position: Int) -> Unit
         ) {
             with(itemView) {
-                translation_text.setText(translation)
-                translation_text.addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        onTranslationChanged(s.toString(), position)
-                    }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                })
+                translation_text.text = translation
+                setOnClickListener {
+                    onTranslationChanged(translation, position)
+                }
             }
         }
     }

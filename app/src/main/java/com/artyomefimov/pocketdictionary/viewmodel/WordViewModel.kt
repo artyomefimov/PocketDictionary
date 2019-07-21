@@ -3,6 +3,7 @@ package com.artyomefimov.pocketdictionary.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import android.util.Log
 import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.api.TranslateApi
@@ -24,6 +25,8 @@ class WordViewModel(
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
 ) : ViewModel() {
+    companion object {const val TAG = "WordViewModel"}
+
     private val component: ViewModelComponent = DaggerViewModelComponent
         .builder()
         .networkModule(NetworkModule)
@@ -66,12 +69,18 @@ class WordViewModel(
 
     }
 
-    fun changeTranslation(changedTranslation: String, position: Int) {
-        // todo cycle
-        val newTranslations = translationsLiveData.value
-        newTranslations?.set(position, changedTranslation)
-        translationsLiveData.value = newTranslations
+    fun changeTranslation(changedTranslation: String?, position: Int?) {
+        if (isReceivedDataValid(changedTranslation, position)) {
+            val newTranslations = translationsLiveData.value
+            newTranslations?.set(position!!, changedTranslation!!)
+            translationsLiveData.value = newTranslations
+        } else {
+            Log.d(TAG, "Invalid translation $changedTranslation and position $position ")
+        }
     }
+
+    private fun isReceivedDataValid(changedTranslation: String?, position: Int?) =
+        changedTranslation != null && position != null && position != -1
 
     fun addEmptyTranslation() {
         val newTranslations = translationsLiveData.value

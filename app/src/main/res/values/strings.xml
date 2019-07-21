@@ -3,4 +3,9 @@
 
     <string name="request_error">An error occurred while loading the dictionary from local storage!</string>
     <string name="search_menu_item">Search</string>
+
+    <!--edit translation-->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_title">Translation</string>
 </resources>
