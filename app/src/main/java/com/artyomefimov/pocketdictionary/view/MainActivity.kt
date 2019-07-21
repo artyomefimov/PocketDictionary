@@ -1,10 +1,9 @@
 package com.artyomefimov.pocketdictionary.view
 
-import android.Manifest
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.view.wordlist.WordListFragment
 
@@ -25,20 +24,6 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
                 commit()
             }
         }
-
-        val permissions = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-
-        requestPermissions(permissions, 123) // todo correctly request permission(only once)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == 123 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            val s = ""
-//        }
     }
 
     fun replaceFragment(fragment: Fragment) {

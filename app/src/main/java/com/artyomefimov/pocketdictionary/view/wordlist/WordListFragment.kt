@@ -1,18 +1,20 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
+import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
-import android.widget.Toast
+import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
-import com.artyomefimov.pocketdictionary.view.MainActivity
-import com.artyomefimov.pocketdictionary.view.word.WordFragment
+import com.artyomefimov.pocketdictionary.view.isPermissionsGranted
+import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
 
@@ -24,7 +26,7 @@ class WordListFragment : Fragment() {
         }
     }
 
-    private lateinit var viewModel: WordListViewModel
+    internal lateinit var viewModel: WordListViewModel
     private lateinit var binding: FragmentListWordsBindingImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,24 +52,10 @@ class WordListFragment : Fragment() {
 
         fab_new_word.setOnClickListener { openWordFragmentFor(DictionaryRecord()) }
 
-        viewModel.loadDictionary(
-            onSuccessfulLoading = { receivedDictionary ->
-                (recycler_view_word_list.adapter as WordListAdapter)
-                    .updateDictionary(receivedDictionary)
-            },
-            onFailure = { errorMessage ->
-                Toast.makeText(
-                    this@WordListFragment.activity,
-                    errorMessage,
-                    Toast.LENGTH_LONG
-                ).show()
-            })
-    }
-
-    private fun openWordFragmentFor(dictionaryRecord: DictionaryRecord) {
-        if (this.activity != null) {
-            val mainActivity = this.activity as MainActivity
-            mainActivity.replaceFragment(WordFragment.newInstance(dictionaryRecord))
+        if (isPermissionsGranted(activity as Activity, needed_permissions)) {
+            loadDictionary()
+        } else {
+            requestPermissions()
         }
     }
 
@@ -84,17 +72,16 @@ class WordListFragment : Fragment() {
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                (recycler_view_word_list.adapter as WordListAdapter)
-                    .updateDictionary(viewModel.dictionary)
+                showDictionary(viewModel.dictionary)
+
                 return true
             }
         })
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                val result = viewModel.findRecords(query)
-                (recycler_view_word_list.adapter as WordListAdapter)
-                    .updateDictionary(result)
+                showSearchResults(viewModel.findRecords(query))
+
                 return true
             }
 
@@ -102,5 +89,14 @@ class WordListFragment : Fragment() {
                 return false
             }
         })
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            loadDictionary()
+        } else {
+            requestPermissions()
+        }
     }
 }

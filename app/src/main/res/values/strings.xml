@@ -8,4 +8,6 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_title">Translation</string>
+
+    <string name="give_needed_permissions">Give storage permission!</string>
 </resources>

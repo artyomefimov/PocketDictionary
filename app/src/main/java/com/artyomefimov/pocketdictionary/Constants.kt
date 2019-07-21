@@ -8,4 +8,5 @@ val LOCAL_STORAGE_PATH = "${EnvironmentHelper.getExternalStorageDirectory()}/poc
 const val EDIT_TRANSLATION_DIALOG_TAG = "edit_translation_dialog"
 
 // request codes
+const val PERMISSIONS_REQUEST_CODE = 123
 const val EDIT_TRANSLATION_DIALOG_REQUEST_CODE = 124
