@@ -39,10 +39,13 @@ internal fun WordListFragment.loadDictionary() {
 }
 
 internal fun WordListFragment.requestPermissions() {
+    requestPermissions(needed_permissions, PERMISSIONS_REQUEST_CODE)
+}
+
+internal fun WordListFragment.showPermissionsMessage() {
     Toast.makeText(
         this.activity,
         R.string.give_needed_permissions,
         Toast.LENGTH_LONG
     ).show()
-    requestPermissions(needed_permissions, PERMISSIONS_REQUEST_CODE)
 }

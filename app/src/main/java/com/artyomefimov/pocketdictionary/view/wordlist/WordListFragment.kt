@@ -96,7 +96,7 @@ class WordListFragment : Fragment() {
         if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             loadDictionary()
         } else {
-            requestPermissions()
+            showPermissionsMessage()
         }
     }
 }
