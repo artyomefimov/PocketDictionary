@@ -1,10 +1,13 @@
-package com.artyomefimov.pocketdictionary.viewmodel
+package com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.api.TranslateApi
 import com.artyomefimov.pocketdictionary.di.DaggerViewModelComponent
@@ -21,6 +24,7 @@ import javax.inject.Inject
 
 class WordViewModel(
     private val dictionaryRecord: DictionaryRecord,
+    private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
     val translationsLiveData: MutableLiveData<MutableList<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
@@ -86,6 +90,18 @@ class WordViewModel(
         val newTranslations = translationsLiveData.value
         newTranslations?.add("")
         translationsLiveData.value = newTranslations
+    }
+
+    fun updateOriginalWord(changedWord: String) {
+        originalWordLiveData.value = changedWord
+    }
+
+    fun setViewsStateAccordingToMode(originalWordText: EditText, submitButton: Button) {
+        viewsStateController.setViewsStateAccordingToMode(originalWordText, submitButton)
+    }
+
+    fun changeStateOf(editItem: MenuItem, originalWordText: EditText, submitButton: Button) {
+        viewsStateController.changeStateOf(editItem, originalWordText, submitButton)
     }
 
     override fun onCleared() {

@@ -8,19 +8,15 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_TAG
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
-import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
-import com.artyomefimov.pocketdictionary.viewmodel.WordViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel
 import kotlinx.android.synthetic.main.fragment_word.*
 
 class WordFragment : Fragment() { // todo implement properly
@@ -39,6 +35,22 @@ class WordFragment : Fragment() { // todo implement properly
     private lateinit var binding: FragmentWordBindingImpl
     private lateinit var viewModel: WordViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater?.inflate(R.menu.menu_word_fragment, menu)
+        val editItem = menu?.findItem(R.id.action_edit)
+        editItem?.setOnMenuItemClickListener {
+            viewModel.changeStateOf(editItem, original_word_text, submit_original_word)
+            return@setOnMenuItemClickListener true
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val dictionaryRecord = arguments?.getSerializable(DICTIONARY_RECORD) as DictionaryRecord
         viewModel = ViewModelProviders.of(this, WordViewModel.Factory(dictionaryRecord))[WordViewModel::class.java]
@@ -55,7 +67,11 @@ class WordFragment : Fragment() { // todo implement properly
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        original_word_text.isEnabled = false // todo change when in edit mode
+        viewModel.setViewsStateAccordingToMode(original_word_text, submit_original_word)
+
+        submit_original_word.setOnClickListener {
+            viewModel.updateOriginalWord(original_word_text.text.toString())
+        }
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter = TranslationsAdapter(ArrayList(),
@@ -85,7 +101,7 @@ class WordFragment : Fragment() { // todo implement properly
                 .show()
         })
 
-        viewModel.loadOriginalWordTranslation(LanguagePairs.EnglishRussian)
+        //viewModel.loadOriginalWordTranslation(LanguagePairs.EnglishRussian)
 
         // todo add logic for closing fragment
     }

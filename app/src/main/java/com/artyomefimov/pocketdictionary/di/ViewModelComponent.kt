@@ -1,7 +1,7 @@
 package com.artyomefimov.pocketdictionary.di
 
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
-import com.artyomefimov.pocketdictionary.viewmodel.WordViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel
 import dagger.Component
 import javax.inject.Singleton
 
