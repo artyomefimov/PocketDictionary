@@ -1,51 +1,30 @@
 package com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel
 
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
 class ViewsStateController(
-    private val dictionaryRecord: DictionaryRecord,
-    private var isEditing: Boolean = false
+    private val dictionaryRecord: DictionaryRecord
 ) {
 
-    fun setViewsStateAccordingToMode(originalWordText: EditText, submitButton: Button) {
-        if (dictionaryRecord.originalWord.isEmpty()) {
-            originalWordText.isEnabled = true
+    private var currentState: ViewState = ViewState.StableState
 
-            submitButton.visibility = View.VISIBLE
-            submitButton.isEnabled = true
-
-            isEditing = true
+    fun getInitialViewState(): ViewState {
+        return if (dictionaryRecord.originalWord.isEmpty()) {
+            currentState = ViewState.EditingState
+            currentState
         } else {
-            originalWordText.isEnabled = false
-
-            submitButton.visibility = View.GONE
-
-            isEditing = false
+            currentState = ViewState.StableState
+            currentState
         }
     }
 
-    fun changeStateOf(editItem: MenuItem, originalWordText: EditText, submitButton: Button) {
-        isEditing = if (isEditing) {
-            editItem.setIcon(R.drawable.ic_action_edit)
-            originalWordText.isEnabled = false
-
-            submitButton.visibility = View.GONE
-
-            false
+    fun getNewState(): ViewState {
+        return if (currentState == ViewState.EditingState) {
+            currentState = ViewState.StableState
+            currentState
         } else {
-            editItem.setIcon(R.drawable.ic_action_finish_edit)
-
-            originalWordText.isEnabled = true
-
-            submitButton.visibility = View.VISIBLE
-            submitButton.isEnabled = true
-
-            true
+            currentState = ViewState.EditingState
+            currentState
         }
     }
 }

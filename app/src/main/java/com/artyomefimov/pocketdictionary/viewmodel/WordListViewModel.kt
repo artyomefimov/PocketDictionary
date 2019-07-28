@@ -2,30 +2,15 @@ package com.artyomefimov.pocketdictionary.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
 import android.view.View
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.di.DaggerViewModelComponent
-import com.artyomefimov.pocketdictionary.di.StorageModule
-import com.artyomefimov.pocketdictionary.di.ViewModelComponent
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
 import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
 import io.reactivex.disposables.Disposable
-import javax.inject.Inject
 
-class WordListViewModel : ViewModel() {
-    private val componentWordList: ViewModelComponent = DaggerViewModelComponent
-        .builder()
-        .storageModule(StorageModule)
-        .build()
-
-    init {
-        componentWordList.inject(this)
-    }
-
-    @Inject
-    lateinit var localStorage: LocalStorage
-
+class WordListViewModel(private val localStorage: LocalStorage) : ViewModel() {
     private lateinit var subscription: Disposable
     private val searchUtil = DictionarySearchUtil()
 
@@ -46,7 +31,7 @@ class WordListViewModel : ViewModel() {
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    onFailure(R.string.request_error)
+                    onFailure(R.string.local_loading_error)
                 })
     }
 
@@ -59,4 +44,8 @@ class WordListViewModel : ViewModel() {
         subscription.dispose()
     }
 
+    class Factory(private val localStorage: LocalStorage): ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T =
+            WordListViewModel(localStorage) as T
+    }
 }

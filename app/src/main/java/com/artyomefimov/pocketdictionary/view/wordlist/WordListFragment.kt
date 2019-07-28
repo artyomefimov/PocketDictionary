@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import com.artyomefimov.pocketdictionary.BaseApp
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
@@ -17,6 +18,7 @@ import com.artyomefimov.pocketdictionary.view.isPermissionsGranted
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
+import javax.inject.Inject
 
 class WordListFragment : Fragment() {
     companion object {
@@ -32,10 +34,11 @@ class WordListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProviders.of(this)[WordListViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = initViewModel()
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_words, container, false)
 
         binding.lifecycleOwner = this

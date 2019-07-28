@@ -2,7 +2,6 @@ package com.artyomefimov.pocketdictionary.view.word
 
 import android.app.Activity
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -45,20 +44,25 @@ class WordFragment : Fragment() { // todo implement properly
 
         inflater?.inflate(R.menu.menu_word_fragment, menu)
         val editItem = menu?.findItem(R.id.action_edit)
-        editItem?.setOnMenuItemClickListener {
-            viewModel.changeStateOf(editItem, original_word_text, submit_original_word)
-            return@setOnMenuItemClickListener true
+        if (editItem != null) {
+            viewModel.getInitialViewState().apply {
+                applyNewStateFor(this, editItem, original_word_text)
+            }
+
+            editItem.setOnMenuItemClickListener {
+                viewModel.getNewState(original_word_text.text.toString()).apply {
+                    applyNewStateFor(this, editItem, original_word_text)
+                }
+                return@setOnMenuItemClickListener true
+            }
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val dictionaryRecord = arguments?.getSerializable(DICTIONARY_RECORD) as DictionaryRecord
-        viewModel = ViewModelProviders.of(this, WordViewModel.Factory(dictionaryRecord))[WordViewModel::class.java]
+        viewModel = initViewModel(DICTIONARY_RECORD)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
-
         binding.lifecycleOwner = this
-
         binding.viewModel = viewModel
 
         return binding.root
@@ -66,12 +70,6 @@ class WordFragment : Fragment() { // todo implement properly
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.setViewsStateAccordingToMode(original_word_text, submit_original_word)
-
-        submit_original_word.setOnClickListener {
-            viewModel.updateOriginalWord(original_word_text.text.toString())
-        }
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter = TranslationsAdapter(ArrayList(),
@@ -92,16 +90,14 @@ class WordFragment : Fragment() { // todo implement properly
                 .updateTranslations(translations ?: listOf())
         })
 
-        viewModel.errorMessage.observe(this, Observer { messageId ->
-            Toast.makeText( // todo propose to add translations manually
+        viewModel.messageLiveData.observe(this, Observer { messageId ->
+            Toast.makeText(
                 this.activity,
                 messageId!!,
                 Toast.LENGTH_SHORT
             )
                 .show()
         })
-
-        //viewModel.loadOriginalWordTranslation(LanguagePairs.EnglishRussian)
 
         // todo add logic for closing fragment
     }

@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.di
+package com.artyomefimov.pocketdictionary.di.viewmodel
 
 import com.artyomefimov.pocketdictionary.BASE_URL
 import com.artyomefimov.pocketdictionary.api.TranslateApi
@@ -20,13 +20,13 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    internal fun provideTranslateApi(retrofit: Retrofit): TranslateApi =
+    fun provideTranslateApi(retrofit: Retrofit): TranslateApi =
         retrofit.create(TranslateApi::class.java)
 
     @Provides
     @Singleton
     @JvmStatic
-    internal fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(): Retrofit {
         val gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(

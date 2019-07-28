@@ -1,6 +1,5 @@
 package com.artyomefimov.pocketdictionary.storage
 
-import android.util.Log
 import com.artyomefimov.pocketdictionary.LOCAL_STORAGE_PATH
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import io.reactivex.Single
@@ -11,8 +10,10 @@ import java.io.FileOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import javax.inject.Inject
+import javax.inject.Singleton
 
-open class LocalStorage @Inject constructor() {
+@Singleton
+class LocalStorage @Inject constructor() {
 
     companion object {
         private const val NO_SUCH_WORD = "No such word"
@@ -33,7 +34,7 @@ open class LocalStorage @Inject constructor() {
 
     fun getDictionaryRecord(originalWord: String): DictionaryRecord {
         if (localDictionaryRecords[originalWord] == null)
-            throw Exception("$NO_SUCH_WORD: $originalWord")
+            return DictionaryRecord()
 
         return DictionaryRecord(originalWord, localDictionaryRecords[originalWord]!!)
     }

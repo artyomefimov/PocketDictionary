@@ -1,21 +1,17 @@
-package com.artyomefimov.pocketdictionary.di
+package com.artyomefimov.pocketdictionary.di.viewmodel
 
-import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [NetworkModule::class, StorageModule::class])
+@Component(modules = [NetworkModule::class])
 interface ViewModelComponent {
     fun inject(wordViewModel: WordViewModel)
-
-    fun inject(wordListViewModel: WordListViewModel)
 
     @Component.Builder
     interface Builder {
         fun build(): ViewModelComponent
         fun networkModule(networkModule: NetworkModule): Builder
-        fun storageModule(storageModule: StorageModule): Builder
     }
 }

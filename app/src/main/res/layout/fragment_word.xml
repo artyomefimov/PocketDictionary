@@ -21,38 +21,21 @@
                     app:mutableVisibility="@{viewModel.getLoadingVisibility()}"
                     android:layout_centerInParent="true"/>
 
-            <RelativeLayout
-                    android:id="@+id/original_word"
+            <EditText
+                    android:id="@+id/original_word_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
-
-                <Button
-                        android:id="@+id/submit_original_word"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dialog_ok"
-                        android:layout_alignParentEnd="true"/>
-
-
-                <EditText
-                        android:id="@+id/original_word_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="43dp"
-                        android:inputType="text"
-                        android:textSize="20sp"
-                        android:padding="4dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@id/submit_original_word"/>
-
-            </RelativeLayout>
+                    android:minHeight="43dp"
+                    android:inputType="text"
+                    android:textSize="20sp"
+                    android:padding="4dp"
+                    android:layout_centerHorizontal="true"/>
 
             <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_translations"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/original_word"/>
+                    android:layout_below="@id/original_word_text"/>
 
             <android.support.design.widget.FloatingActionButton
                     android:id="@+id/fab_add_translation"
@@ -65,6 +48,5 @@
                     app:srcCompat="@drawable/ic_add_word"/>
 
         </RelativeLayout>
-
     </android.support.design.widget.CoordinatorLayout>
 </layout>

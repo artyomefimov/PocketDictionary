@@ -1,13 +1,22 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
+import android.arch.lifecycle.ViewModelProviders
 import android.widget.Toast
+import com.artyomefimov.pocketdictionary.BaseApp
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.view.MainActivity
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.view.word.WordFragment
+import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
+
+internal fun WordListFragment.initViewModel(): WordListViewModel {
+    val localStorage = (activity?.application as BaseApp).localStorage
+    return ViewModelProviders.of(this,
+        WordListViewModel.Factory(localStorage))[WordListViewModel::class.java]
+}
 
 internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRecord) {
     if (this.activity != null) {
