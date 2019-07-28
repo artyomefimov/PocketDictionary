@@ -66,6 +66,11 @@ class WordViewModel(
         translationsLiveData.value = newTranslations
     }
 
+    fun undoChanges(): ViewState {
+        originalWordLiveData.value = dictionaryRecord.originalWord
+        return ViewState.StableState
+    }
+
     fun getInitialViewState(): ViewState {
         return viewsStateController.getInitialViewState()
     }

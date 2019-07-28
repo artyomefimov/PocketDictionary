@@ -1,17 +1,18 @@
 <resources>
     <string name="app_name">Pocket Dictionary</string>
 
+    <!--menu items-->
     <string name="search_menu_item">Search</string>
     <string name="edit_menu_item">Edit</string>
+    <string name="undo_menu_item">Undo</string>
 
-    <!--edit translation-->
+    <!--edit translation dialog-->
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_title">Translation</string>
 
+    <!--messages-->
     <string name="give_needed_permissions">Give storage permission!</string>
-
-    <!--error messages-->
     <string name="local_loading_error">An error occurred while loading the dictionary from local storage!</string>
     <string name="duplicate_original_word">Dictionary record with such word already exists!</string>
     <string name="api_request_error">Could not load translation! You can add translations by yourself</string>

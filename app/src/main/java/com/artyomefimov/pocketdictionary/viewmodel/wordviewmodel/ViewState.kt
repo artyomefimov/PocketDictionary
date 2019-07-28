@@ -9,7 +9,7 @@ enum class ViewState(
     val isEnabled: Boolean
 ) {
     EditingState(
-        R.drawable.ic_action_finish_edit,
+        R.drawable.ic_action_edit_done,
         View.VISIBLE,
         true
     ),

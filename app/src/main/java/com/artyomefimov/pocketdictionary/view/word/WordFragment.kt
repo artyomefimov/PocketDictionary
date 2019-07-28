@@ -43,18 +43,25 @@ class WordFragment : Fragment() { // todo implement properly
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater?.inflate(R.menu.menu_word_fragment, menu)
-        val editItem = menu?.findItem(R.id.action_edit)
-        if (editItem != null) {
-            viewModel.getInitialViewState().apply {
+        val editItem = menu?.findItem(R.id.action_edit)!!
+        viewModel.getInitialViewState().apply {
+            applyNewStateFor(this, editItem, original_word_text)
+        }
+
+        editItem.setOnMenuItemClickListener {
+            viewModel.getNewState(original_word_text.text.toString()).apply {
+                applyNewStateFor(this, editItem, original_word_text)
+            }
+            return@setOnMenuItemClickListener true
+        }
+
+        val undoItem = menu.findItem(R.id.action_undo)!!
+        undoItem.setOnMenuItemClickListener {
+            viewModel.undoChanges().apply {
                 applyNewStateFor(this, editItem, original_word_text)
             }
 
-            editItem.setOnMenuItemClickListener {
-                viewModel.getNewState(original_word_text.text.toString()).apply {
-                    applyNewStateFor(this, editItem, original_word_text)
-                }
-                return@setOnMenuItemClickListener true
-            }
+            return@setOnMenuItemClickListener true
         }
     }
 
