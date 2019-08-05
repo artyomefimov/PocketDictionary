@@ -13,6 +13,7 @@ import com.artyomefimov.pocketdictionary.di.viewmodel.ViewModelComponent
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
+import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -22,11 +23,11 @@ class WordViewModel(
     private val dictionaryRecord: DictionaryRecord,
     private val localStorage: LocalStorage,
     private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
-    val translationsLiveData: MutableLiveData<MutableList<String>> = MutableLiveData(),
+    val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
 ) : ViewModel() {
-    companion object {
+    private companion object {
         const val TAG = "WordViewModel"
     }
 
@@ -37,8 +38,8 @@ class WordViewModel(
 
     init {
         component.inject(this)
-        translationsLiveData.value = dictionaryRecord.translations
         originalWordLiveData.value = dictionaryRecord.originalWord
+        translationsLiveData.value = dictionaryRecord.translations
         loadingVisibility.value = View.GONE
     }
 
@@ -49,22 +50,22 @@ class WordViewModel(
 
     fun changeTranslation(changedTranslation: String?, position: Int?) {
         if (isReceivedDataValid(changedTranslation, position)) {
-            val newTranslations = translationsLiveData.value
-            newTranslations?.set(position!!, changedTranslation!!)
+            val newTranslations = getMutableListOf(translationsLiveData.value!!)
+            newTranslations[position!!] = changedTranslation!!
             translationsLiveData.value = newTranslations
         } else {
-            Log.d(TAG, "Invalid translation $changedTranslation and position $position ")
+            Log.d(TAG, "Invalid translation $changedTranslation and position $position")
         }
     }
 
     private fun isReceivedDataValid(changedTranslation: String?, position: Int?) =
         changedTranslation != null && position != null && position != -1
 
-    fun addEmptyTranslation() {
-        val newTranslations = translationsLiveData.value
-        newTranslations?.add("")
+    fun addTranslation(translation: String) {
+        val newTranslations = getMutableListOf(translationsLiveData.value!!)
+        newTranslations.add(translation)
         translationsLiveData.value = newTranslations
-    }
+    } // todo change translation on special position, not create new one
 
     fun undoChanges(): ViewState {
         originalWordLiveData.value = dictionaryRecord.originalWord
@@ -77,11 +78,14 @@ class WordViewModel(
 
     fun getNewState(changedWord: String): ViewState {
         val newState = viewsStateController.getNewState()
-        return if (newState == ViewState.StableState)
+        return if (isOriginalWordUpdateWasFinished(newState))
             handleChangedOriginalWord(changedWord)
         else
             newState
     }
+
+    private fun isOriginalWordUpdateWasFinished(newState: ViewState): Boolean =
+        newState == ViewState.StableState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
         if (changedWord.isEmpty()) {
@@ -122,7 +126,7 @@ class WordViewModel(
             .subscribe(
                 { response ->
                     loadingVisibility.value = View.GONE
-                    translationsLiveData.value?.add(response.responseData.translatedText)
+                    addTranslation(response.responseData.translatedText)
                     messageLiveData.value = R.string.manual_adding_translations_proposal
                 },
                 {
@@ -131,10 +135,17 @@ class WordViewModel(
                 })
     }
 
+    fun updateStorage(callUpdateService: (oldRecord: DictionaryRecord, updatedRecord: DictionaryRecord) -> Unit) {
+        val updatedDictionaryRecord = DictionaryRecord(
+            originalWordLiveData.value!!,
+            translationsLiveData.value!!
+        )
+        callUpdateService(dictionaryRecord, updatedDictionaryRecord)
+    }
+
     override fun onCleared() {
         super.onCleared()
         subscription?.dispose()
-        // todo background save to storage
     }
 
     class Factory(

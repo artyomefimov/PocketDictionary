@@ -10,9 +10,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
+import com.artyomefimov.pocketdictionary.OLD_DICTIONARY_RECORD
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.UPDATED_DICTIONARY_RECORD
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.services.StorageUpdateService
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
 import com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel
@@ -85,7 +88,7 @@ class WordFragment : Fragment() { // todo implement properly
             })
 
         fab_add_translation.setOnClickListener {
-            viewModel.addEmptyTranslation()
+            viewModel.addTranslation("")
         }
 
         viewModel.originalWordLiveData.observe(this, Observer { originalWord ->
@@ -105,8 +108,6 @@ class WordFragment : Fragment() { // todo implement properly
             )
                 .show()
         })
-
-        // todo add logic for closing fragment
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -118,6 +119,17 @@ class WordFragment : Fragment() { // todo implement properly
                         data?.getIntExtra(POSITION, -1)
                     )
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.updateStorage { oldRecord, updatedRecord ->
+            val updateIntent = Intent(activity, StorageUpdateService::class.java).apply {
+                putExtra(OLD_DICTIONARY_RECORD, oldRecord)
+                putExtra(UPDATED_DICTIONARY_RECORD, updatedRecord)
+            }
+            activity?.startService(updateIntent)
         }
     }
 }

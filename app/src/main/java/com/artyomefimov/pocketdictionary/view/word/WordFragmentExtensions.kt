@@ -28,8 +28,8 @@ internal fun WordFragment.initViewModel(bundleKey: String): WordViewModel {
     )[WordViewModel::class.java]
 }
 
-internal fun WordFragment.applyNewStateFor(viewState: ViewState, editItem: MenuItem, originalWordText: EditText) =
+internal fun applyNewStateFor(viewState: ViewState, editItem: MenuItem, originalWordText: EditText) =
     viewState.apply {
         editItem.setIcon(menuIcon)
-        original_word_text.isEnabled = isEnabled
+        originalWordText.isEnabled = isEnabled
     }

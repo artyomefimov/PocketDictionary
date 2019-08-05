@@ -26,9 +26,9 @@ class LocalStorageTest {
         }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun testGettingTranslationsForNotExistingWord() {
-        storage.getDictionaryRecord("qwerty")
+        assertEquals(DictionaryRecord(), storage.getDictionaryRecord("qwerty"))
     }
 
     @Test
@@ -55,7 +55,7 @@ class LocalStorageTest {
             ArrayList<String>().apply { add("собачка") }
         )
 
-        storage.addDictionaryRecord(newRecordWithNewTranslation)
+        storage.updateTranslations(newRecordWithNewTranslation)
 
         assertTrue(storage.localDictionaryRecords["dog"]!!.contains("собачка"))
     }
@@ -70,13 +70,17 @@ class LocalStorageTest {
             }
         )
 
-        storage.addDictionaryRecord(newRecordWithNewAndExistingTranslation)
+        storage.updateTranslations(newRecordWithNewAndExistingTranslation)
 
         assertTrue(storage.getDictionaryRecord("dog")
             .translations.contains("собачка"))
+
         assertEquals(1,
             storage.getDictionaryRecord("dog")
             .translations.count { it == "собака" })
+
+        assertEquals(newRecordWithNewAndExistingTranslation.translations,
+            storage.getDictionaryRecord("dog").translations)
     }
 
     @Test
@@ -90,7 +94,7 @@ class LocalStorageTest {
         }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun testRemoveTranslationForNonExistingRecord() {
         storage.removeTranslation("qwerty", "2")
     }

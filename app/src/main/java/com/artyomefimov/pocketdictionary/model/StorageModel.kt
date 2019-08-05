@@ -4,5 +4,5 @@ import java.io.Serializable
 
 data class DictionaryRecord(
     val originalWord: String = "",
-    val translations: MutableList<String> = ArrayList()
+    val translations: List<String> = ArrayList()
 ) : Serializable
