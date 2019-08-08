@@ -10,18 +10,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.OLD_DICTIONARY_RECORD
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.UPDATED_DICTIONARY_RECORD
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
-import com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 import kotlinx.android.synthetic.main.fragment_word.*
 
-class WordFragment : Fragment() { // todo implement properly
+class WordFragment : Fragment() {
     companion object {
         private const val DICTIONARY_RECORD = "dictionaryRecord"
 
@@ -124,12 +122,10 @@ class WordFragment : Fragment() { // todo implement properly
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.updateStorage { oldRecord, updatedRecord ->
-            val updateIntent = Intent(activity, StorageUpdateService::class.java).apply {
-                putExtra(OLD_DICTIONARY_RECORD, oldRecord)
-                putExtra(UPDATED_DICTIONARY_RECORD, updatedRecord)
-            }
-            activity?.startService(updateIntent)
+        viewModel.updateDictionary {
+            activity?.startService(
+                Intent(activity, StorageUpdateService::class.java)
+            )
         }
     }
 }

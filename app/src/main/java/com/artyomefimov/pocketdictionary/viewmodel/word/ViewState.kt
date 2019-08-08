@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel
+package com.artyomefimov.pocketdictionary.viewmodel.word
 
 import com.artyomefimov.pocketdictionary.R
 

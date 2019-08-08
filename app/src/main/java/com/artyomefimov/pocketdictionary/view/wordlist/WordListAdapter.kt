@@ -38,7 +38,7 @@ class WordListAdapter(
         ) {
             with(itemView) {
                 original_word_list_item.text = dictionaryRecord.originalWord
-                translations_list_item.text = dictionaryRecord.translations.toString()
+                translations_list_item.text = dictionaryRecord.translations.getOrNull(0) // todo rethink logic
 
                 setOnClickListener {
                     onItemClickAction(dictionaryRecord)

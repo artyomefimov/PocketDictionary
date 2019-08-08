@@ -4,7 +4,7 @@
     <data>
         <variable
                 name="viewModel"
-                type="com.artyomefimov.pocketdictionary.viewmodel.wordviewmodel.WordViewModel"/>
+                type="com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"

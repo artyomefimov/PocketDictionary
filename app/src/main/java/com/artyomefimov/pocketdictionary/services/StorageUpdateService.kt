@@ -3,13 +3,10 @@ package com.artyomefimov.pocketdictionary.services
 import android.app.IntentService
 import android.content.Intent
 import android.util.Log
-import com.artyomefimov.pocketdictionary.BaseApp
-import com.artyomefimov.pocketdictionary.OLD_DICTIONARY_RECORD
-import com.artyomefimov.pocketdictionary.UPDATED_DICTIONARY_RECORD
-import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 
 class StorageUpdateService : IntentService(TAG) {
-    internal companion object {
+    private companion object {
         internal const val TAG = "StorageUpdateService"
     }
 
@@ -17,12 +14,10 @@ class StorageUpdateService : IntentService(TAG) {
         if (intent == null)
             return
 
-        val oldRecord = intent.getSerializableExtra(OLD_DICTIONARY_RECORD) as DictionaryRecord
-        val newRecord = intent.getSerializableExtra(UPDATED_DICTIONARY_RECORD) as DictionaryRecord
-        val localStorage = (application as BaseApp).localStorage
-
-        Log.d(TAG, "Old record: $oldRecord, updated record: $newRecord")
-
-        performUpdate(localStorage, oldRecord, newRecord)
+        try {
+            PocketDictionaryApplication.repository(this).saveDictionary()
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not save dictionary to file", e)
+        }
     }
 }

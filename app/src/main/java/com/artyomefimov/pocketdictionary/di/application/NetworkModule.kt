@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.di.viewmodel
+package com.artyomefimov.pocketdictionary.di.application
 
 import com.artyomefimov.pocketdictionary.BASE_URL
 import com.artyomefimov.pocketdictionary.api.TranslateApi

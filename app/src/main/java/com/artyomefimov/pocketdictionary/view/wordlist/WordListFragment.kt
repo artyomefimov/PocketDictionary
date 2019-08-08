@@ -1,7 +1,6 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -9,16 +8,14 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
-import com.artyomefimov.pocketdictionary.BaseApp
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.view.isPermissionsGranted
 import com.artyomefimov.pocketdictionary.view.needed_permissions
-import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.wordlist.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
-import javax.inject.Inject
 
 class WordListFragment : Fragment() {
     companion object {
@@ -70,13 +67,10 @@ class WordListFragment : Fragment() {
         val searchView = menuItem?.actionView as SearchView
 
         menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                return true
-            }
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 showDictionary(viewModel.dictionary)
-
                 return true
             }
         })
@@ -84,22 +78,22 @@ class WordListFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 showSearchResults(viewModel.findRecords(query))
-
                 return true
             }
 
-            override fun onQueryTextChange(changedText: String?): Boolean {
-                return false
-            }
+            override fun onQueryTextChange(changedText: String?): Boolean = false
         })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSIONS_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (isRequestCodeCorrectAndPermissionsGranted(requestCode, grantResults))
             loadDictionary()
-        } else {
+        else
             showPermissionsMessage()
-        }
+
     }
+
+    private fun isRequestCodeCorrectAndPermissionsGranted(requestCode: Int, grantResults: IntArray) =
+        requestCode == PERMISSIONS_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED
 }

@@ -1,21 +1,24 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.widget.Toast
-import com.artyomefimov.pocketdictionary.BaseApp
+import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.view.MainActivity
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.view.word.WordFragment
-import com.artyomefimov.pocketdictionary.viewmodel.WordListViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.factory.WordListViewModelFactory
+import com.artyomefimov.pocketdictionary.viewmodel.wordlist.WordListViewModel
 import kotlinx.android.synthetic.main.fragment_list_words.*
 
 internal fun WordListFragment.initViewModel(): WordListViewModel {
-    val localStorage = (activity?.application as BaseApp).localStorage
+    val repository = PocketDictionaryApplication.repository(activity as Context)
     return ViewModelProviders.of(this,
-        WordListViewModel.Factory(localStorage))[WordListViewModel::class.java]
+        WordListViewModelFactory(repository)
+    )[WordListViewModel::class.java]
 }
 
 internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRecord) {
@@ -30,11 +33,6 @@ internal fun WordListFragment.showSearchResults(result: List<DictionaryRecord>) 
         .updateDictionary(result)
 }
 
-internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>) {
-    (recycler_view_word_list.adapter as WordListAdapter)
-        .updateDictionary(dictionary)
-}
-
 internal fun WordListFragment.loadDictionary() {
     viewModel.loadDictionary(
         onSuccessfulLoading = { receivedDictionary -> showDictionary(receivedDictionary) },
@@ -45,6 +43,11 @@ internal fun WordListFragment.loadDictionary() {
                 Toast.LENGTH_LONG
             ).show()
         })
+}
+
+internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>) {
+    (recycler_view_word_list.adapter as WordListAdapter)
+        .updateDictionary(dictionary)
 }
 
 internal fun WordListFragment.requestPermissions() {
