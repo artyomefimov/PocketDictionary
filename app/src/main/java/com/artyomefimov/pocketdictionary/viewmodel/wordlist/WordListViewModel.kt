@@ -42,8 +42,21 @@ class WordListViewModel(
                 })
     }
 
-    fun findRecords(query: String?): List<DictionaryRecord> {
-        return searchUtil.search(query, dictionary) // todo maybe do in background
+    fun findRecords(
+        query: String?,
+        onSuccessfulLoading: (List<DictionaryRecord>) -> Unit
+    ) {
+        subscription = searchUtil.search(query, dictionary)
+            .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
+            .subscribe(
+                {
+                    loadingVisibility.value = View.GONE
+                    onSuccessfulLoading(it)
+                },
+                {
+                    loadingVisibility.value = View.GONE
+                    Log.e(TAG, "Exception occurred during search", it)
+                })
     }
 
     override fun onCleared() {

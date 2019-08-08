@@ -77,7 +77,9 @@ class WordListFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                showSearchResults(viewModel.findRecords(query))
+                viewModel.findRecords(query) {
+                    showSearchResults(it)
+                }
                 return true
             }
 

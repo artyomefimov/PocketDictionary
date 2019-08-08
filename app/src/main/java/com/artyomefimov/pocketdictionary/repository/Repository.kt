@@ -29,16 +29,20 @@ class Repository @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
 
     fun getDictionary(): Single<List<DictionaryRecord>> {
-        if (localStorage.localDictionaryRecords.isNotEmpty())
+        if (localStorage.localDictionaryRecords.isNotEmpty()) {
             return Single.fromCallable {
                 return@fromCallable convertMapToList(localStorage.localDictionaryRecords)
-
             }
-        else
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        } else {
             return Single.fromCallable {
                 readDictionaryFromLocalFile()
                 return@fromCallable convertMapToList(localStorage.localDictionaryRecords)
             }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

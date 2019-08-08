@@ -3,6 +3,7 @@ package com.artyomefimov.pocketdictionary.utils
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 
 import org.junit.Test
 
@@ -42,8 +43,8 @@ class DictionarySearchUtilTest {
     }
 
     @Test
-    fun testWordsThatContainSymbolsFromQueryNotFromStartAreNotIncludedInResult() {
-        assertEquals(dictionary, resultOfQuery("ppl"))
+    fun testWordsThatContainSymbolsFromQueryNotFromStartAreIncludedInResult() {
+        assertEquals(dictionary, resultOfQuery("appl"))
     }
 
     @Test
@@ -57,6 +58,6 @@ class DictionarySearchUtilTest {
     }
 
     private fun resultOfQuery(query: String?): List<DictionaryRecord> {
-        return searchUtil.search(query, dictionary)
+        return searchUtil.getSearchResult(query, dictionary)
     }
 }

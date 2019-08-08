@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.services
+package com.artyomefimov.pocketdictionary.repository
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
