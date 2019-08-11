@@ -56,9 +56,8 @@ class Repository @Inject constructor(
             it.writeObject(localStorage.localDictionaryRecords)
         }
 
-    fun updateRepository(oldRecord: DictionaryRecord, newRecord: DictionaryRecord) {
+    fun updateRepository(oldRecord: DictionaryRecord, newRecord: DictionaryRecord): Boolean =
         performUpdate(this, oldRecord, newRecord)
-    }
 
     fun getDictionaryRecord(originalWord: String): DictionaryRecord =
         localStorage.getDictionaryRecord(originalWord)

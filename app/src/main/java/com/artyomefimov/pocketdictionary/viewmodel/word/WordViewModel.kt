@@ -121,17 +121,13 @@ class WordViewModel(
     }
 
     fun updateDictionary(callUpdateService: () -> Unit) {
-        if (isLatinInputIncorrect(originalWordLiveData.value!!)) {
-            messageLiveData.value = R.string.incorrect_original_word
-            return
-        }
-
         val updatedDictionaryRecord = DictionaryRecord(
             originalWordLiveData.value!!,
             translationsLiveData.value!!
         )
-        repository.updateRepository(dictionaryRecord, updatedDictionaryRecord)
-        callUpdateService()
+        val isUpdated = repository.updateRepository(dictionaryRecord, updatedDictionaryRecord)
+        if (isUpdated)
+            callUpdateService()
     }
 
     override fun onCleared() {
