@@ -35,7 +35,7 @@ class WordViewModel(
     val messageLiveData: MutableLiveData<Int> = MutableLiveData()
 
     fun handleNewTranslationOnPosition(translation: String?, position: Int?) {
-        if (position == NEW_TRANSLATION_POSITION)
+        if (NEW_TRANSLATION_POSITION == position)
             addTranslation(translation!!)
         else
             changeTranslation(translation, position)
