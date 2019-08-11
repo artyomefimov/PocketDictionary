@@ -9,6 +9,7 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
+import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
 import io.reactivex.disposables.Disposable
 
 class WordViewModel(
@@ -63,7 +64,7 @@ class WordViewModel(
     fun getNewState(changedWord: String): ViewState {
         val newState = viewsStateController.getNewState()
         return if (isOriginalWordUpdateWasFinished(newState))
-            handleChangedOriginalWord(changedWord)
+            handleChangedOriginalWord(changedWord.trim())
         else
             newState
     }
@@ -72,8 +73,8 @@ class WordViewModel(
         newState == ViewState.StableState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
-        if (changedWord.isEmpty()) {
-            messageLiveData.value = R.string.empty_original_word
+        if (isLatinInputIncorrect(changedWord)) {
+            messageLiveData.value = R.string.incorrect_original_word
             return ViewState.EditingState
         }
         if (isWordNotChanged(changedWord))
@@ -120,8 +121,8 @@ class WordViewModel(
     }
 
     fun updateDictionary(callUpdateService: () -> Unit) {
-        if (isOriginalWordIncorrect(originalWordLiveData.value!!)) {
-            messageLiveData.value = R.string.empty_original_word
+        if (isLatinInputIncorrect(originalWordLiveData.value!!)) {
+            messageLiveData.value = R.string.incorrect_original_word
             return
         }
 
@@ -132,9 +133,6 @@ class WordViewModel(
         repository.updateRepository(dictionaryRecord, updatedDictionaryRecord)
         callUpdateService()
     }
-
-    private fun isOriginalWordIncorrect(originalWord: String) =
-        originalWord.isEmpty() || originalWord.isBlank()
 
     override fun onCleared() {
         super.onCleared()

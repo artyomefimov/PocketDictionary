@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.Toast
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.utils.isCyrillicInputCorrect
 
 class EditTranslationDialog : DialogFragment() {
     companion object {
@@ -36,25 +38,38 @@ class EditTranslationDialog : DialogFragment() {
         val dialog = AlertDialog.Builder(activity)
             .setTitle(R.string.dialog_title)
             .setPositiveButton(R.string.dialog_ok) { _, _ ->
-                targetFragment?.onActivityResult(
-                    targetRequestCode,
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtra(POSITION, position)
-                        putExtra(TRANSLATION, editText.text.toString())
-                    })
+                val changedTranslation = editText.text.toString().trim()
+
+                if (isCyrillicInputCorrect(changedTranslation))
+                    sendOkResult(position, changedTranslation)
+                else
+                    showErrorMessage()
+
             }
-            .setNegativeButton(R.string.dialog_cancel) { _, _ ->
-                targetFragment?.onActivityResult(
-                    targetRequestCode,
-                    Activity.RESULT_CANCELED,
-                    Intent()
-                )
-            }
+            .setNegativeButton(R.string.dialog_cancel) { _, _ -> sendCancelledResult()}
             .setView(view)
             .create()
 
         dialog.setCanceledOnTouchOutside(true)
         return dialog
     }
+
+    private fun sendOkResult(position: Int, translation: String) =
+        targetFragment?.onActivityResult(
+            targetRequestCode,
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(POSITION, position)
+                putExtra(TRANSLATION, translation)
+            })
+
+    private fun showErrorMessage() =
+        Toast.makeText(activity, R.string.incorrect_translation, Toast.LENGTH_SHORT).show()
+
+    private fun sendCancelledResult() =
+        targetFragment?.onActivityResult(
+            targetRequestCode,
+            Activity.RESULT_CANCELED,
+            Intent()
+        )
 }

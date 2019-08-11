@@ -7,12 +7,11 @@ import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
-import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
+import com.artyomefimov.pocketdictionary.utils.search
 import io.reactivex.disposables.Disposable
 
 class WordListViewModel(
-    private val repository: Repository,
-    private val searchUtil: DictionarySearchUtil = DictionarySearchUtil()
+    private val repository: Repository
 ) : ViewModel() {
     private companion object {
         const val TAG = "WordListViewModel"
@@ -46,7 +45,7 @@ class WordListViewModel(
         query: String?,
         onSuccessfulLoading: (List<DictionaryRecord>) -> Unit
     ) {
-        subscription = searchUtil.search(query, dictionary)
+        subscription = search(query, dictionary)
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
                 {

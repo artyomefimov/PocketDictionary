@@ -1,10 +1,7 @@
 package com.artyomefimov.pocketdictionary.utils
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
-import com.artyomefimov.pocketdictionary.utils.search.DictionarySearchUtil
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-
 import org.junit.Test
 
 class DictionarySearchUtilTest {
@@ -19,8 +16,6 @@ class DictionarySearchUtilTest {
         add(word3)
         add(word4)
     }
-
-    private val searchUtil = DictionarySearchUtil()
 
     @Test
     fun testCommonQueryReturnsAllWords() {
@@ -58,6 +53,6 @@ class DictionarySearchUtilTest {
     }
 
     private fun resultOfQuery(query: String?): List<DictionaryRecord> {
-        return searchUtil.getSearchResult(query, dictionary)
+        return getSearchResult(query, dictionary)
     }
 }

@@ -17,5 +17,6 @@
     <string name="duplicate_original_word">Dictionary record with such word already exists!</string>
     <string name="api_request_error">Could not load translation! You can add translations by yourself</string>
     <string name="manual_adding_translations_proposal">Now you can add translations by yourself</string>
-    <string name="empty_original_word">You should enter a word to translate!</string>
+    <string name="incorrect_original_word">Original word should contain only latin symbols and spaces between them!</string>
+    <string name="incorrect_translation">Translation should contain only cyrillic symbols and spaces between them!</string>
 </resources>
