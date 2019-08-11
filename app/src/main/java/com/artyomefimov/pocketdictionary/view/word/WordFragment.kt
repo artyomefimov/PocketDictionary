@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
+import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
@@ -86,7 +87,7 @@ class WordFragment : Fragment() {
             })
 
         fab_add_translation.setOnClickListener {
-            viewModel.addTranslation("")
+            showEditTranslationDialog("", NEW_TRANSLATION_POSITION)
         }
 
         viewModel.originalWordLiveData.observe(this, Observer { originalWord ->
@@ -112,7 +113,7 @@ class WordFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 EDIT_TRANSLATION_DIALOG_REQUEST_CODE ->
-                    viewModel.changeTranslation(
+                    viewModel.handleNewTranslationOnPosition(
                         data?.getStringExtra(TRANSLATION),
                         data?.getIntExtra(POSITION, -1)
                     )

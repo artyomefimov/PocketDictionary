@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import android.view.View
+import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
@@ -33,7 +34,14 @@ class WordViewModel(
     private var subscription: Disposable? = null
     val messageLiveData: MutableLiveData<Int> = MutableLiveData()
 
-    fun changeTranslation(changedTranslation: String?, position: Int?) {
+    fun handleNewTranslationOnPosition(translation: String?, position: Int?) {
+        if (position == NEW_TRANSLATION_POSITION)
+            addTranslation(translation!!)
+        else
+            changeTranslation(translation, position)
+    }
+
+    private fun changeTranslation(changedTranslation: String?, position: Int?) {
         if (isReceivedDataValid(changedTranslation, position)) {
             val newTranslations = getMutableListOf(translationsLiveData.value!!)
             newTranslations[position!!] = changedTranslation!!
@@ -46,7 +54,7 @@ class WordViewModel(
     private fun isReceivedDataValid(changedTranslation: String?, position: Int?) =
         changedTranslation != null && position != null && position != -1
 
-    fun addTranslation(translation: String) {
+    private fun addTranslation(translation: String) {
         val newTranslations = getMutableListOf(translationsLiveData.value!!)
         newTranslations.add(translation)
         translationsLiveData.value = newTranslations

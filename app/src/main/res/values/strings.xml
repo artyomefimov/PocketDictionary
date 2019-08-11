@@ -7,8 +7,6 @@
     <string name="undo_menu_item">Undo</string>
 
     <!--edit translation dialog-->
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">Cancel</string>
     <string name="dialog_title">Translation</string>
 
     <!--messages-->
