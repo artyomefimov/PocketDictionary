@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.utils.binding
+package com.artyomefimov.pocketdictionary.utils
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer

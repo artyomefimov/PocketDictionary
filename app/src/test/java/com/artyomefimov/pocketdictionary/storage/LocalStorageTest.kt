@@ -85,7 +85,7 @@ class LocalStorageTest {
 
     @Test
     fun testRemoveExistingDictionaryRecord() {
-        storage.removeDictionaryRecord(DictionaryRecord("dog"))
+        storage.removeDictionaryRecord("dog")
 
         try {
             storage.getDictionaryRecord("dog")

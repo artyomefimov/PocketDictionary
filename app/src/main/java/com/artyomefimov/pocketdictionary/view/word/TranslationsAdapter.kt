@@ -9,7 +9,8 @@ import kotlinx.android.synthetic.main.list_item_translation.view.*
 
 class TranslationsAdapter(
     private var translations: List<String>,
-    private val onItemClicked: (translation: String, position: Int) -> Unit
+    private val onClickAction: (translation: String, position: Int) -> Unit,
+    private val onLongClickAction: (translation: String) -> Unit
 ) :
     RecyclerView.Adapter<TranslationsAdapter.TranslationsViewHolder>() {
 
@@ -28,18 +29,23 @@ class TranslationsAdapter(
         translations.size
 
     override fun onBindViewHolder(holder: TranslationsViewHolder, position: Int) =
-        holder.bind(translations[position], position, onItemClicked)
+        holder.bind(translations[position], position, onClickAction, onLongClickAction)
 
     class TranslationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(
             translation: String,
             position: Int,
-            onTranslationChanged: (translation: String, position: Int) -> Unit
+            onTranslationChanged: (translation: String, position: Int) -> Unit,
+            onLongClickAction: (translation: String) -> Unit
         ) {
             with(itemView) {
                 translation_text.text = translation
                 setOnClickListener {
                     onTranslationChanged(translation, position)
+                }
+                setOnLongClickListener {
+                    onLongClickAction(translation)
+                    true
                 }
             }
         }

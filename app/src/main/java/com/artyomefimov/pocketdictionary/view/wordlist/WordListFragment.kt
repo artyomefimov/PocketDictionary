@@ -1,6 +1,8 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -8,10 +10,15 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import android.widget.Toast
+import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.services.StorageUpdateService
+import com.artyomefimov.pocketdictionary.utils.showConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.isPermissionsGranted
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.viewmodel.wordlist.WordListViewModel
@@ -48,9 +55,22 @@ class WordListFragment : Fragment() {
 
         recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_word_list.adapter = WordListAdapter(ArrayList(),
-            onItemClickAction = { dictionaryRecord -> openWordFragmentFor(dictionaryRecord) })
+            onClickAction = { dictionaryRecord -> openWordFragmentFor(dictionaryRecord) },
+            onLongClickAction = { originalWord -> showConfirmDeletionDialog(originalWord) })
 
         fab_new_word.setOnClickListener { openWordFragmentFor(DictionaryRecord()) }
+
+        viewModel.dictionaryLiveData.observe(this, Observer {
+            showDictionary(it!!)
+        })
+
+        viewModel.messageLiveData.observe(this, Observer { messageResId ->
+            Toast.makeText(
+                this.activity,
+                messageResId!!,
+                Toast.LENGTH_LONG
+            ).show()
+        })
 
         if (isPermissionsGranted(activity as Activity, needed_permissions)) {
             loadDictionary()
@@ -98,4 +118,18 @@ class WordListFragment : Fragment() {
 
     private fun isRequestCodeCorrectAndPermissionsGranted(requestCode: Int, grantResults: IntArray) =
         requestCode == PERMISSIONS_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CONFIRM_DELETION_DIALOG_REQUEST_CODE -> viewModel.deleteDictionaryRecord(
+                    data?.getStringExtra(ELEMENT)!!
+                ) {
+                    activity?.startService(
+                        Intent(activity, StorageUpdateService::class.java)
+                    )
+                }
+            }
+        }
+    }
 }

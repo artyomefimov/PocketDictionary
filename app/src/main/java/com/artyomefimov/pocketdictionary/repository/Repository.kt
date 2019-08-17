@@ -56,7 +56,7 @@ class Repository @Inject constructor(
             it.writeObject(localStorage.localDictionaryRecords)
         }
 
-    fun updateRepository(oldRecord: DictionaryRecord, newRecord: DictionaryRecord): Boolean =
+    fun updateDictionaryRecord(oldRecord: DictionaryRecord, newRecord: DictionaryRecord): Boolean =
         performUpdate(this, oldRecord, newRecord)
 
     fun getDictionaryRecord(originalWord: String): DictionaryRecord =
@@ -77,8 +77,8 @@ class Repository @Inject constructor(
     fun removeDictionaryRecords(dictionaryRecords: List<DictionaryRecord>) =
         localStorage.removeDictionaryRecords(dictionaryRecords)
 
-    fun removeDictionaryRecord(dictionaryRecord: DictionaryRecord) =
-        localStorage.removeDictionaryRecord(dictionaryRecord)
+    fun removeDictionaryRecord(originalWord: String) =
+        localStorage.removeDictionaryRecord(originalWord)
 
     fun removeTranslation(originalWord: String, translation: String) =
         localStorage.removeTranslation(originalWord, translation)

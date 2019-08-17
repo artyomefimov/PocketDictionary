@@ -9,12 +9,16 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
+import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
+import com.artyomefimov.pocketdictionary.utils.showConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.utils.showEditTranslationDialog
+import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
@@ -82,9 +86,8 @@ class WordFragment : Fragment() {
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter = TranslationsAdapter(ArrayList(),
-            onItemClicked = { translation, position ->
-                showEditTranslationDialog(translation, position)
-            })
+            onClickAction = { translation, position -> showEditTranslationDialog(translation, position) },
+            onLongClickAction = { translation -> showConfirmDeletionDialog(translation) })
 
         fab_add_translation.setOnClickListener {
             showEditTranslationDialog("", NEW_TRANSLATION_POSITION)
@@ -112,11 +115,13 @@ class WordFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                EDIT_TRANSLATION_DIALOG_REQUEST_CODE ->
-                    viewModel.handleNewTranslationOnPosition(
-                        data?.getStringExtra(TRANSLATION),
-                        data?.getIntExtra(POSITION, -1)
-                    )
+                EDIT_TRANSLATION_DIALOG_REQUEST_CODE -> viewModel.handleNewTranslationOnPosition(
+                    data?.getStringExtra(TRANSLATION),
+                    data?.getIntExtra(POSITION, -1)
+                )
+                CONFIRM_DELETION_DIALOG_REQUEST_CODE -> viewModel.deleteTranslation(
+                    data?.getStringExtra(ELEMENT)!!
+                )
             }
         }
     }

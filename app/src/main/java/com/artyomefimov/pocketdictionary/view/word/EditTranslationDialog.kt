@@ -9,16 +9,16 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
-import com.artyomefimov.pocketdictionary.R as pdR
 import com.artyomefimov.pocketdictionary.utils.isCyrillicInputCorrect
-
-
+import com.artyomefimov.pocketdictionary.utils.sendResult
+import com.artyomefimov.pocketdictionary.R as pdR
 
 class EditTranslationDialog : DialogFragment() {
     companion object {
         const val TRANSLATION = "translation"
         const val POSITION = "position"
 
+        @JvmStatic
         fun newInstance(translation: String, position: Int): EditTranslationDialog =
             EditTranslationDialog().apply {
                 arguments = Bundle().apply {
@@ -32,13 +32,13 @@ class EditTranslationDialog : DialogFragment() {
         val position = arguments?.getInt(POSITION)!!
         val translation = arguments?.getString(TRANSLATION)!!
 
-        val view = LayoutInflater.from(activity).inflate(pdR.layout.fragment_edit_translation, null)
+        val view = LayoutInflater.from(activity).inflate(pdR.layout.dialog_edit_translation, null)
 
         val editText = view.findViewById<EditText>(pdR.id.translation_edit)
         editText.setText(translation)
 
         val dialog = AlertDialog.Builder(activity)
-            .setTitle(pdR.string.dialog_title)
+            .setTitle(pdR.string.edit_translation_dialog_title)
             .setPositiveButton(android.R.string.ok, null)
             .setNegativeButton(android.R.string.cancel, null)
             .setView(view)
@@ -51,37 +51,24 @@ class EditTranslationDialog : DialogFragment() {
                 val changedTranslation = editText.text.toString().trim()
 
                 if (isCyrillicInputCorrect(changedTranslation)) {
-                    sendOkResult(position, changedTranslation)
+                    sendResult(Activity.RESULT_OK,
+                        Intent().apply {
+                            putExtra(POSITION, position)
+                            putExtra(TRANSLATION, translation)
+                        })
                     dialog.dismiss()
-                }
-                else
+                } else
                     showErrorMessage()
             }
 
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
-                sendCancelledResult()
+                sendResult(Activity.RESULT_CANCELED, Intent())
                 dialog.dismiss()
             }
         }
         return dialog
     }
 
-    private fun sendOkResult(position: Int, translation: String) =
-        targetFragment?.onActivityResult(
-            targetRequestCode,
-            Activity.RESULT_OK,
-            Intent().apply {
-                putExtra(POSITION, position)
-                putExtra(TRANSLATION, translation)
-            })
-
     private fun showErrorMessage() =
         Toast.makeText(activity, pdR.string.incorrect_translation, Toast.LENGTH_SHORT).show()
-
-    private fun sendCancelledResult() =
-        targetFragment?.onActivityResult(
-            targetRequestCode,
-            Activity.RESULT_CANCELED,
-            Intent()
-        )
 }

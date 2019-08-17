@@ -31,20 +31,20 @@ class LocalStorage(
     }
 
     fun replaceRecord(oldRecord: DictionaryRecord, newRecord: DictionaryRecord) {
-        removeDictionaryRecord(oldRecord)
+        removeDictionaryRecord(oldRecord.originalWord)
         addDictionaryRecord(newRecord)
     }
 
     fun removeDictionaryRecords(dictionaryRecords: List<DictionaryRecord>) =
         dictionaryRecords.forEach { record ->
-            removeDictionaryRecord(record)
+            removeDictionaryRecord(record.originalWord)
         }
 
-    fun removeDictionaryRecord(dictionaryRecord: DictionaryRecord) {
-        if (isNoSuchWordInDictionary(dictionaryRecord.originalWord))
+    fun removeDictionaryRecord(originalWord: String) {
+        if (isNoSuchWordInDictionary(originalWord))
             return
 
-        localDictionaryRecords.remove(dictionaryRecord.originalWord)
+        localDictionaryRecords.remove(originalWord)
     }
 
     fun removeTranslation(originalWord: String, translation: String) {

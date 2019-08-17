@@ -7,11 +7,16 @@ import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
+import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.utils.search
 import io.reactivex.disposables.Disposable
 
 class WordListViewModel(
-    private val repository: Repository
+    private val repository: Repository,
+    var dictionary: List<DictionaryRecord> = ArrayList(),
+    val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
+    val messageLiveData: MutableLiveData<Int> = MutableLiveData(),
+    val dictionaryLiveData: MutableLiveData<List<DictionaryRecord>> = MutableLiveData()
 ) : ViewModel() {
     private companion object {
         const val TAG = "WordListViewModel"
@@ -19,25 +24,19 @@ class WordListViewModel(
 
     private lateinit var subscription: Disposable
 
-    var dictionary: List<DictionaryRecord> = ArrayList()
-    val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
-
-    fun loadDictionary(
-        onSuccessfulLoading: (List<DictionaryRecord>) -> Unit,
-        onFailure: (message: Int) -> Unit
-    ) {
+    fun loadDictionary() {
         subscription = repository.getDictionary()
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
                 { dictionaryRecords ->
                     loadingVisibility.value = View.GONE
                     dictionary = dictionaryRecords
-                    onSuccessfulLoading(dictionaryRecords)
+                    dictionaryLiveData.value = dictionaryRecords
                 },
                 {
                     loadingVisibility.value = View.GONE
                     Log.e(TAG, "exception during dictionary loading", it)
-                    onFailure(R.string.local_loading_error)
+                    messageLiveData.value = R.string.local_loading_error
                 })
     }
 
@@ -56,6 +55,15 @@ class WordListViewModel(
                     loadingVisibility.value = View.GONE
                     Log.e(TAG, "Exception occurred during search", it)
                 })
+    }
+
+    fun deleteDictionaryRecord(originalWord: String, callUpdateService: () -> Unit) {
+        val dictionary = getMutableListOf(dictionaryLiveData.value!!)
+        dictionary.removeAll { it.originalWord == originalWord }
+        dictionaryLiveData.value = dictionary
+
+        repository.removeDictionaryRecord(originalWord)
+        callUpdateService()
     }
 
     override fun onCleared() {

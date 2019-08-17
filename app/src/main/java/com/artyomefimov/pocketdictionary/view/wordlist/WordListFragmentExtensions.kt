@@ -34,15 +34,7 @@ internal fun WordListFragment.showSearchResults(result: List<DictionaryRecord>) 
 }
 
 internal fun WordListFragment.loadDictionary() {
-    viewModel.loadDictionary(
-        onSuccessfulLoading = { receivedDictionary -> showDictionary(receivedDictionary) },
-        onFailure = { errorMessage ->
-            Toast.makeText(
-                this.activity,
-                errorMessage,
-                Toast.LENGTH_LONG
-            ).show()
-        })
+    viewModel.loadDictionary()
 }
 
 internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>) {

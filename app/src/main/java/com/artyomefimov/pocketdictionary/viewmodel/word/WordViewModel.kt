@@ -19,7 +19,8 @@ class WordViewModel(
     private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
-    val loadingVisibility: MutableLiveData<Int> = MutableLiveData()
+    val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
+    val messageLiveData: MutableLiveData<Int> = MutableLiveData()
 ) : ViewModel() {
     private companion object {
         const val TAG = "WordViewModel"
@@ -32,7 +33,12 @@ class WordViewModel(
     }
 
     private var subscription: Disposable? = null
-    val messageLiveData: MutableLiveData<Int> = MutableLiveData()
+
+    fun deleteTranslation(translation: String) {
+        val newTranslations = getMutableListOf(translationsLiveData.value!!)
+        newTranslations.remove(translation)
+        translationsLiveData.value = newTranslations
+    }
 
     fun handleNewTranslationOnPosition(translation: String?, position: Int?) {
         if (NEW_TRANSLATION_POSITION == position)
@@ -133,7 +139,7 @@ class WordViewModel(
             originalWordLiveData.value!!,
             translationsLiveData.value!!
         )
-        val isUpdated = repository.updateRepository(dictionaryRecord, updatedDictionaryRecord)
+        val isUpdated = repository.updateDictionaryRecord(dictionaryRecord, updatedDictionaryRecord)
         if (isUpdated)
             callUpdateService()
     }

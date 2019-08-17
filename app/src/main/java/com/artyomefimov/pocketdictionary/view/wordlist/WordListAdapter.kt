@@ -10,7 +10,8 @@ import kotlinx.android.synthetic.main.list_item_word.view.*
 
 class WordListAdapter(
     var dictionary: List<DictionaryRecord>,
-    private val onItemClickAction: (dictionaryRecord: DictionaryRecord) -> Unit
+    private val onClickAction: (dictionaryRecord: DictionaryRecord) -> Unit,
+    private val onLongClickAction: (translation: String) -> Unit
 ) :
     RecyclerView.Adapter<WordListAdapter.WordListViewHolder>() {
 
@@ -29,19 +30,24 @@ class WordListAdapter(
         dictionary.size
 
     override fun onBindViewHolder(holder: WordListViewHolder, position: Int) =
-        holder.bind(dictionary[position], onItemClickAction)
+        holder.bind(dictionary[position], onClickAction, onLongClickAction)
 
     class WordListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(
             dictionaryRecord: DictionaryRecord,
-            onItemClickAction: (dictionaryRecord: DictionaryRecord) -> Unit
+            onClickAction: (dictionaryRecord: DictionaryRecord) -> Unit,
+            onLongClickAction: (translation: String) -> Unit
         ) {
             with(itemView) {
                 original_word_list_item.text = dictionaryRecord.originalWord
                 translations_list_item.text = dictionaryRecord.translations.getOrNull(0) // todo rethink logic
 
                 setOnClickListener {
-                    onItemClickAction(dictionaryRecord)
+                    onClickAction(dictionaryRecord)
+                }
+                setOnLongClickListener {
+                    onLongClickAction(dictionaryRecord.originalWord)
+                    true
                 }
             }
         }

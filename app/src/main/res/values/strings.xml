@@ -7,7 +7,10 @@
     <string name="undo_menu_item">Undo</string>
 
     <!--edit translation dialog-->
-    <string name="dialog_title">Translation</string>
+    <string name="edit_translation_dialog_title">Translation</string>
+    <!--confirm deletion dialog-->
+    <string name="confirm_deletion_dialog_title">Confirm deletion</string>
+    <string name="confirm_deletion_message">Delete this item?</string>
 
     <!--messages-->
     <string name="give_needed_permissions">Give storage permission!</string>
