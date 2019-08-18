@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.arch.lifecycle.ViewModelProviders
@@ -5,6 +7,7 @@ import android.content.Context
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.view.adapters.WordListAdapter
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.utils.view.longToast
 import com.artyomefimov.pocketdictionary.view.MainActivity
@@ -29,9 +32,9 @@ internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRe
     }
 }
 
-internal fun WordListFragment.showSearchResults(result: List<DictionaryRecord>) {
-    (recycler_view_word_list.adapter as WordListAdapter)
-        .updateDictionary(result)
+internal fun WordListFragment.showSearchResults(searchResult: List<DictionaryRecord>) {
+    (recycler_view_word_list.adapter as WordListAdapter<DictionaryRecord>)
+        .updateData(searchResult)
 }
 
 internal fun WordListFragment.loadDictionary() {
@@ -39,8 +42,8 @@ internal fun WordListFragment.loadDictionary() {
 }
 
 internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>) {
-    (recycler_view_word_list.adapter as WordListAdapter)
-        .updateDictionary(dictionary)
+    (recycler_view_word_list.adapter as WordListAdapter<DictionaryRecord>)
+        .updateData(dictionary)
 }
 
 internal fun WordListFragment.requestPermissions() {

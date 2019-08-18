@@ -13,6 +13,7 @@ import android.view.*
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.view.adapters.WordListAdapter
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
@@ -55,9 +56,10 @@ class WordListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
-        recycler_view_word_list.adapter = WordListAdapter(ArrayList(),
-            onClickAction = { dictionaryRecord -> openWordFragmentFor(dictionaryRecord) },
-            onLongClickAction = { originalWord -> showDialog<ConfirmDeletionDialog>(originalWord, -1) })
+        recycler_view_word_list.adapter =
+            WordListAdapter<DictionaryRecord>(ArrayList(),
+                onClickAction = { dictionaryRecord -> openWordFragmentFor(dictionaryRecord) },
+                onLongClickAction = { originalWord -> showDialog<ConfirmDeletionDialog>(originalWord, -1) })
 
         fab_new_word.setOnClickListener { openWordFragmentFor(DictionaryRecord()) }
 

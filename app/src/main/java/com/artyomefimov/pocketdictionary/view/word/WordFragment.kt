@@ -12,6 +12,7 @@ import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.view.adapters.TranslationsAdapter
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
@@ -81,13 +82,15 @@ class WordFragment : Fragment() {
         return binding.root
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
-        recycler_view_translations.adapter = TranslationsAdapter(ArrayList(),
-            onClickAction = { translation, position -> showDialog<EditTranslationDialog>(translation, position) },
-            onLongClickAction = { translation -> showDialog<ConfirmDeletionDialog>(translation, -1) })
+        recycler_view_translations.adapter =
+            TranslationsAdapter<String>(ArrayList(),
+                onClickAction = { translation, position -> showDialog<EditTranslationDialog>(translation, position) },
+                onLongClickAction = { translation -> showDialog<ConfirmDeletionDialog>(translation, -1) })
 
         fab_add_translation.setOnClickListener {
             showDialog<EditTranslationDialog>("", NEW_TRANSLATION_POSITION)
@@ -98,8 +101,8 @@ class WordFragment : Fragment() {
         })
 
         viewModel.translationsLiveData.observe(this, Observer { translations ->
-            (recycler_view_translations.adapter as TranslationsAdapter)
-                .updateTranslations(translations ?: listOf())
+            (recycler_view_translations.adapter as TranslationsAdapter<String>)
+                .updateData(translations ?: listOf())
         })
 
         viewModel.messageLiveData.observe(this, Observer { messageResId -> shortToast(messageResId!!) })
