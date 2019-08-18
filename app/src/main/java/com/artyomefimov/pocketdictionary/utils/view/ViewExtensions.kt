@@ -28,25 +28,27 @@ fun DialogFragment.sendResult(resultCode: Int, intent: Intent) =
         intent
     )
 
-fun Fragment.showEditTranslationDialog(translation: String, position: Int) {
-    if (fragmentManager != null) {
-        val targetFragment = this
-        val editTranslationDialog = EditTranslationDialog.newInstance(translation, position)
-        editTranslationDialog.setTargetFragment(
-            targetFragment,
-            EDIT_TRANSLATION_DIALOG_REQUEST_CODE
-        )
-        editTranslationDialog.show(fragmentManager, EDIT_TRANSLATION_DIALOG_TAG)
+inline fun <reified T : DialogFragment> Fragment.showDialog(stringValue: String, position: Int) {
+    when (T::class) {
+        EditTranslationDialog::class ->
+            configureAndShow(
+                EditTranslationDialog.newInstance(stringValue, position),
+                EDIT_TRANSLATION_DIALOG_REQUEST_CODE,
+                EDIT_TRANSLATION_DIALOG_TAG
+            )
+        ConfirmDeletionDialog::class ->
+            configureAndShow(
+                ConfirmDeletionDialog.newInstance(stringValue),
+                CONFIRM_DELETION_DIALOG_REQUEST_CODE,
+                CONFIRM_DELETION_DIALOG_TAG
+            )
     }
 }
 
-fun Fragment.showConfirmDeletionDialog(element: String) {
-    if (fragmentManager != null) {
-        val confirmDeletionDialog = ConfirmDeletionDialog.newInstance(element)
-        confirmDeletionDialog.setTargetFragment(
-            this,
-            CONFIRM_DELETION_DIALOG_REQUEST_CODE
-        )
-        confirmDeletionDialog.show(fragmentManager, CONFIRM_DELETION_DIALOG_TAG)
-    }
+fun Fragment.configureAndShow(dialog: DialogFragment, requestCode: Int, tag: String) {
+    dialog.setTargetFragment(
+        this,
+        requestCode
+    )
+    dialog.show(fragmentManager, tag)
 }

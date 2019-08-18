@@ -53,8 +53,8 @@ class EditTranslationDialog : DialogFragment() {
                 if (isCyrillicInputCorrect(changedTranslation)) {
                     sendResult(Activity.RESULT_OK,
                         Intent().apply {
+                            putExtra(TRANSLATION, changedTranslation)
                             putExtra(POSITION, position)
-                            putExtra(TRANSLATION, translation)
                         })
                     dialog.dismiss()
                 } else

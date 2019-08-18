@@ -12,7 +12,7 @@ import com.artyomefimov.pocketdictionary.utils.view.sendResult
 
 class ConfirmDeletionDialog : DialogFragment() {
     companion object {
-        const val ELEMENT = "position"
+        const val ELEMENT = "element"
 
         @JvmStatic
         fun newInstance(element: String): ConfirmDeletionDialog =

@@ -15,9 +15,9 @@ import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
-import com.artyomefimov.pocketdictionary.utils.view.showConfirmDeletionDialog
-import com.artyomefimov.pocketdictionary.utils.view.showEditTranslationDialog
 import com.artyomefimov.pocketdictionary.utils.view.shortToast
+import com.artyomefimov.pocketdictionary.utils.view.showDialog
+import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog
 import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
@@ -86,11 +86,11 @@ class WordFragment : Fragment() {
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter = TranslationsAdapter(ArrayList(),
-            onClickAction = { translation, position -> showEditTranslationDialog(translation, position) },
-            onLongClickAction = { translation -> showConfirmDeletionDialog(translation) })
+            onClickAction = { translation, position -> showDialog<EditTranslationDialog>(translation, position) },
+            onLongClickAction = { translation -> showDialog<ConfirmDeletionDialog>(translation, -1) })
 
         fab_add_translation.setOnClickListener {
-            showEditTranslationDialog("", NEW_TRANSLATION_POSITION)
+            showDialog<EditTranslationDialog>("", NEW_TRANSLATION_POSITION)
         }
 
         viewModel.originalWordLiveData.observe(this, Observer { originalWord ->
