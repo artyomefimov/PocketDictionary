@@ -10,14 +10,14 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
-import android.widget.Toast
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentListWordsBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
-import com.artyomefimov.pocketdictionary.utils.showConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.utils.view.showConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.utils.view.shortToast
 import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.isPermissionsGranted
 import com.artyomefimov.pocketdictionary.view.needed_permissions
@@ -64,13 +64,7 @@ class WordListFragment : Fragment() {
             showDictionary(it!!)
         })
 
-        viewModel.messageLiveData.observe(this, Observer { messageResId ->
-            Toast.makeText(
-                this.activity,
-                messageResId!!,
-                Toast.LENGTH_LONG
-            ).show()
-        })
+        viewModel.messageLiveData.observe(this, Observer { messageResId -> shortToast(messageResId!!) })
 
         if (isPermissionsGranted(activity as Activity, needed_permissions)) {
             loadDictionary()

@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.utils
+package com.artyomefimov.pocketdictionary.utils.view
 
 import android.content.ContextWrapper
 import android.content.Intent

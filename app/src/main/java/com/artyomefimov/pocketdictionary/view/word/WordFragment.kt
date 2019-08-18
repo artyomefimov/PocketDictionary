@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.Toast
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
@@ -16,8 +15,9 @@ import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
-import com.artyomefimov.pocketdictionary.utils.showConfirmDeletionDialog
-import com.artyomefimov.pocketdictionary.utils.showEditTranslationDialog
+import com.artyomefimov.pocketdictionary.utils.view.showConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.utils.view.showEditTranslationDialog
+import com.artyomefimov.pocketdictionary.utils.view.shortToast
 import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog.Companion.TRANSLATION
@@ -102,14 +102,7 @@ class WordFragment : Fragment() {
                 .updateTranslations(translations ?: listOf())
         })
 
-        viewModel.messageLiveData.observe(this, Observer { messageId ->
-            Toast.makeText(
-                this.activity,
-                messageId!!,
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        })
+        viewModel.messageLiveData.observe(this, Observer { messageResId -> shortToast(messageResId!!) })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

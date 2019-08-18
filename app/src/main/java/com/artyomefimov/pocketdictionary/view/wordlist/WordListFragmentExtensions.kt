@@ -2,11 +2,11 @@ package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.widget.Toast
-import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
+import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.utils.view.longToast
 import com.artyomefimov.pocketdictionary.view.MainActivity
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.view.word.WordFragment
@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.fragment_list_words.*
 
 internal fun WordListFragment.initViewModel(): WordListViewModel {
     val repository = PocketDictionaryApplication.repository(activity as Context)
-    return ViewModelProviders.of(this,
+    return ViewModelProviders.of(
+        this,
         WordListViewModelFactory(repository)
     )[WordListViewModel::class.java]
 }
@@ -46,10 +47,5 @@ internal fun WordListFragment.requestPermissions() {
     requestPermissions(needed_permissions, PERMISSIONS_REQUEST_CODE)
 }
 
-internal fun WordListFragment.showPermissionsMessage() {
-    Toast.makeText(
-        this.activity,
-        R.string.give_needed_permissions,
-        Toast.LENGTH_LONG
-    ).show()
-}
+internal fun WordListFragment.showPermissionsMessage() =
+    longToast(R.string.give_needed_permissions)

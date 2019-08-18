@@ -8,9 +8,9 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.Toast
 import com.artyomefimov.pocketdictionary.utils.isCyrillicInputCorrect
-import com.artyomefimov.pocketdictionary.utils.sendResult
+import com.artyomefimov.pocketdictionary.utils.view.sendResult
+import com.artyomefimov.pocketdictionary.utils.view.shortToast
 import com.artyomefimov.pocketdictionary.R as pdR
 
 class EditTranslationDialog : DialogFragment() {
@@ -70,5 +70,5 @@ class EditTranslationDialog : DialogFragment() {
     }
 
     private fun showErrorMessage() =
-        Toast.makeText(activity, pdR.string.incorrect_translation, Toast.LENGTH_SHORT).show()
+        shortToast(pdR.string.incorrect_translation)
 }

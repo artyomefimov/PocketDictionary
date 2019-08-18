@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.utils.sendResult
+import com.artyomefimov.pocketdictionary.utils.view.sendResult
 
 class ConfirmDeletionDialog : DialogFragment() {
     companion object {
