@@ -11,21 +11,19 @@ import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.TranslationsHandler
 import io.reactivex.disposables.Disposable
 
 class WordViewModel(
     private val dictionaryRecord: DictionaryRecord,
     private val repository: Repository,
     private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
+    private val translationsHandler: TranslationsHandler = TranslationsHandler(),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
     val messageLiveData: MutableLiveData<Int> = MutableLiveData()
 ) : ViewModel() {
-    private companion object {
-        const val TAG = "WordViewModel"
-    }
-
     init {
         originalWordLiveData.value = dictionaryRecord.originalWord
         translationsLiveData.value = dictionaryRecord.translations
@@ -34,36 +32,17 @@ class WordViewModel(
 
     private var subscription: Disposable? = null
 
+    fun handleNewTranslationOnPosition(changedTranslation: String?, position: Int?) {
+        translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
+            changedTranslation = changedTranslation,
+            position = position,
+            translationsLiveDataValue = translationsLiveData.value!!)
+    }
+
     fun deleteTranslation(translation: String) {
-        val newTranslations = getMutableListOf(translationsLiveData.value!!)
-        newTranslations.remove(translation)
-        translationsLiveData.value = newTranslations
-    }
-
-    fun handleNewTranslationOnPosition(translation: String?, position: Int?) {
-        if (NEW_TRANSLATION_POSITION == position)
-            addTranslation(translation!!)
-        else
-            changeTranslation(translation, position)
-    }
-
-    private fun changeTranslation(changedTranslation: String?, position: Int?) {
-        if (isReceivedDataValid(changedTranslation, position)) {
-            val newTranslations = getMutableListOf(translationsLiveData.value!!)
-            newTranslations[position!!] = changedTranslation!!
-            translationsLiveData.value = newTranslations
-        } else {
-            Log.d(TAG, "Invalid translation $changedTranslation and position $position")
-        }
-    }
-
-    private fun isReceivedDataValid(changedTranslation: String?, position: Int?) =
-        changedTranslation != null && position != null && position != -1
-
-    private fun addTranslation(translation: String) {
-        val newTranslations = getMutableListOf(translationsLiveData.value!!)
-        newTranslations.add(translation)
-        translationsLiveData.value = newTranslations
+        translationsLiveData.value = translationsHandler.deleteTranslation(
+            translation = translation,
+            translationsLiveDataValue = translationsLiveData.value!!)
     }
 
     fun undoChanges(): ViewState {
@@ -125,7 +104,10 @@ class WordViewModel(
             .subscribe(
                 { response ->
                     loadingVisibility.value = View.GONE
-                    addTranslation(response.responseData.translatedText)
+                    translationsLiveData.value = translationsHandler.addTranslation(
+                        translation = response.responseData.translatedText,
+                        mutableTranslations = getMutableListOf(translationsLiveData.value!!)
+                    )
                     messageLiveData.value = R.string.manual_adding_translations_proposal
                 },
                 {
