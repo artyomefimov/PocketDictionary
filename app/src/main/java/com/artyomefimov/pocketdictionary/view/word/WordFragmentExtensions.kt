@@ -13,6 +13,7 @@ import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 internal fun WordFragment.initViewModel(bundleKey: String): WordViewModel {
     val dictionaryRecord = arguments?.getSerializable(bundleKey) as DictionaryRecord
     val repository = PocketDictionaryApplication.repository(activity as Context)
+
     return ViewModelProviders.of(
         this,
         WordViewModelFactory(dictionaryRecord, repository)

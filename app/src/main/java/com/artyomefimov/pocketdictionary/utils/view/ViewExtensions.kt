@@ -6,9 +6,9 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.View
 import com.artyomefimov.pocketdictionary.*
-import com.artyomefimov.pocketdictionary.view.ConfirmDeletionDialog
 import com.artyomefimov.pocketdictionary.view.MainActivity
-import com.artyomefimov.pocketdictionary.view.word.EditTranslationDialog
+import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog
+import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
 
 fun View.getParentFragment(): Fragment? {
     var context = this.context

@@ -1,4 +1,4 @@
-package com.artyomefimov.pocketdictionary.view
+package com.artyomefimov.pocketdictionary.view.dialogs
 
 import android.app.Activity
 import android.app.AlertDialog
