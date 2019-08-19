@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Карманный словарь</string>
+
+    <!--menu items-->
+    <string name="search_menu_item">Поиск</string>
+    <string name="edit_menu_item">Редактировать</string>
+    <string name="undo_menu_item">Отменить</string>
+
+    <!--edit translation dialog-->
+    <string name="edit_translation_dialog_title">Перевод</string>
+    <!--confirm deletion dialog-->
+    <string name="confirm_deletion_dialog_title">Удаление</string>
+    <string name="confirm_deletion_message">Удалить элемент?</string>
+
+    <!--messages-->
+    <string name="give_needed_permissions">Разрешите приложению доступ к хранилищу</string>
+    <string name="local_loading_error">Ошибка во время загрузки словаря из локального хранилища</string>
+    <string name="duplicate_original_word">Запись с таким словом уже существует</string>
+    <string name="manual_adding_translations_proposal">Теперь вы можете добавлять переводы вручную</string>
+    <string name="incorrect_original_word">Слово для перевода должно содержать только латинские символы и пробелы</string>
+    <string name="incorrect_translation">Перевод должен состоять из кириллицы и пробелов</string>
+    <string name="api_request_error">Невозможно загрузить перевод. Вы можете добавлять переводы вручную</string>
+</resources>

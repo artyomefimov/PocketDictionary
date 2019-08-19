@@ -10,17 +10,15 @@ import com.artyomefimov.pocketdictionary.utils.convertMapToList
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class Repository @Inject constructor(
     private val translateApi: TranslateApi,
-    private val localStorage: LocalStorage = LocalStorage()
+    private val localStorage: LocalStorage = LocalStorage(),
+    private val localFile: File = File(LOCAL_STORAGE_PATH)
 ) {
 
     fun getTranslation(originalWord: String, languagesPair: LanguagePairs): Single<Response> =
@@ -46,10 +44,14 @@ class Repository @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun readDictionaryFromLocalFile() =
-        ObjectInputStream(FileInputStream(LOCAL_STORAGE_PATH)).use {
+    private fun readDictionaryFromLocalFile() {
+        if (!localFile.exists())
+            localFile.createNewFile()
+
+        ObjectInputStream(FileInputStream(localFile)).use {
             localStorage.localDictionaryRecords = it.readObject() as MutableMap<String, List<String>>
         }
+    }
 
     fun saveDictionary() =
         ObjectOutputStream(FileOutputStream(LOCAL_STORAGE_PATH)).use {

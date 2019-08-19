@@ -10,6 +10,7 @@ import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.utils.search
 import io.reactivex.disposables.Disposable
+import java.io.EOFException
 
 class WordListViewModel(
     private val repository: Repository,
@@ -36,7 +37,8 @@ class WordListViewModel(
                 {
                     loadingVisibility.value = View.GONE
                     Log.e(TAG, "exception during dictionary loading", it)
-                    messageLiveData.value = R.string.local_loading_error
+                    if (it !is EOFException)
+                        messageLiveData.value = R.string.local_loading_error
                 })
     }
 

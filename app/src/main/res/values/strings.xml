@@ -13,11 +13,11 @@
     <string name="confirm_deletion_message">Delete this item?</string>
 
     <!--messages-->
-    <string name="give_needed_permissions">Give storage permission!</string>
-    <string name="local_loading_error">An error occurred while loading the dictionary from local storage!</string>
-    <string name="duplicate_original_word">Dictionary record with such word already exists!</string>
-    <string name="api_request_error">Could not load translation! You can add translations by yourself</string>
+    <string name="give_needed_permissions">Give storage permission</string>
+    <string name="local_loading_error">An error occurred while loading the dictionary from local storage</string>
+    <string name="duplicate_original_word">Dictionary record with such word already exists</string>
     <string name="manual_adding_translations_proposal">Now you can add translations by yourself</string>
-    <string name="incorrect_original_word">Original word should contain only latin symbols and spaces between them!</string>
-    <string name="incorrect_translation">Translation should contain only cyrillic symbols and spaces between them!</string>
+    <string name="incorrect_original_word">Original word should contain only latin symbols and spaces between them</string>
+    <string name="incorrect_translation">Translation should contain only cyrillic symbols and spaces between them</string>
+    <string name="api_request_error">Could not load translation! You can add translations by yourself</string>
 </resources>
