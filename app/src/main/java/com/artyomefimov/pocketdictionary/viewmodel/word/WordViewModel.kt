@@ -78,7 +78,7 @@ class WordViewModel(
         newState == ViewState.StableState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
-        when(val result = originalWordHandler.handle(changedWord, originalWordLiveData.value!!)) {
+        when(val result = originalWordHandler.handle(changedWord, dictionaryRecord.originalWord)) {
             is Result.LatinInputIncorrect -> {
                 toastMessageLiveData.value = result.messageResId
                 return result.viewState
