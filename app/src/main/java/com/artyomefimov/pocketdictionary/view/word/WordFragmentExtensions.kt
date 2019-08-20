@@ -7,7 +7,7 @@ import android.widget.EditText
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.viewmodel.factory.WordViewModelFactory
-import com.artyomefimov.pocketdictionary.viewmodel.word.ViewState
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 
 internal fun WordFragment.initViewModel(bundleKey: String): WordViewModel {

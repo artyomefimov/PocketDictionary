@@ -3,7 +3,6 @@ package com.artyomefimov.pocketdictionary.viewmodel.word.handlers
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
-import com.artyomefimov.pocketdictionary.viewmodel.word.ViewState
 
 class OriginalWordHandler(private val repository: Repository) {
     fun handle(changedWord: String, originalWord: String): Result {

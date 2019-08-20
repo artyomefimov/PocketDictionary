@@ -8,16 +8,16 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
-import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.OriginalWordHandler
-import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.Result
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.*
 import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
-import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.TranslationsHandler
 import io.reactivex.disposables.Disposable
 
 class WordViewModel(
     private val dictionaryRecord: DictionaryRecord,
     private val repository: Repository,
-    private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
+    private val viewStateController: ViewStateController = ViewStateController(
+        dictionaryRecord
+    ),
     private val translationsHandler: TranslationsHandler = TranslationsHandler(),
     private val originalWordHandler: OriginalWordHandler = OriginalWordHandler(repository),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
@@ -59,15 +59,15 @@ class WordViewModel(
     }
 
     fun setInitialViewState(viewState: ViewState) {
-        viewsStateController.setInitialViewState(viewState)
+        viewStateController.setInitialViewState(viewState)
     }
 
     fun getInitialViewState(): ViewState =
-        viewsStateController.getInitialViewState()
+        viewStateController.getInitialViewState()
 
 
     fun getNewState(changedWord: String): ViewState {
-        val newState = viewsStateController.getNewState()
+        val newState = viewStateController.getNewState()
         return if (isOriginalWordUpdateWasFinished(newState))
             handleChangedOriginalWord(changedWord.trim())
         else

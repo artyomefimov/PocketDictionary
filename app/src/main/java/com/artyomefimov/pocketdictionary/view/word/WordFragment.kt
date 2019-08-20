@@ -22,7 +22,7 @@ import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog.Comp
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.TRANSLATION
-import com.artyomefimov.pocketdictionary.viewmodel.word.ViewState
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 import kotlinx.android.synthetic.main.fragment_word.*
 

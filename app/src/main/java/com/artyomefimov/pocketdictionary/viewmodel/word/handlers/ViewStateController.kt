@@ -1,12 +1,14 @@
-package com.artyomefimov.pocketdictionary.viewmodel.word
+package com.artyomefimov.pocketdictionary.viewmodel.word.handlers
 
+import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
-class ViewsStateController(
+class ViewStateController(
     private val dictionaryRecord: DictionaryRecord
 ) {
 
-    private var currentState: ViewState = ViewState.StableState
+    private var currentState: ViewState =
+        ViewState.StableState
 
     fun setInitialViewState(viewState: ViewState) {
         currentState = viewState
@@ -30,4 +32,12 @@ class ViewsStateController(
             currentState
         }
     }
+}
+
+enum class ViewState(
+    val menuIcon: Int,
+    val isEnabled: Boolean
+) {
+    EditingState(R.drawable.ic_action_edit_done, true),
+    StableState(R.drawable.ic_action_edit, false)
 }
