@@ -36,6 +36,7 @@ class EditTranslationDialog : DialogFragment() {
 
         val editText = view.findViewById<EditText>(pdR.id.translation_edit)
         editText.setText(translation)
+        editText.setSelection(editText.text.length)
 
         val dialog = AlertDialog.Builder(activity)
             .setTitle(pdR.string.edit_translation_dialog_title)
