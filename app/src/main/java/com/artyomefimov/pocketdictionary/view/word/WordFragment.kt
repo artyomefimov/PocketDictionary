@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
-import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.*
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
@@ -23,6 +20,7 @@ import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog.Comp
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.TRANSLATION
+import com.artyomefimov.pocketdictionary.viewmodel.word.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 import kotlinx.android.synthetic.main.fragment_word.*
 
@@ -41,10 +39,29 @@ class WordFragment : Fragment() {
 
     private lateinit var binding: FragmentWordBindingImpl
     private lateinit var viewModel: WordViewModel
+    private lateinit var initialViewState: ViewState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val serializable = savedInstanceState?.getSerializable(VIEW_STATE)
+        initialViewState = if (serializable != null) {
+            serializable as ViewState
+        } else ViewState.StableState
+
         setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = initViewModel(DICTIONARY_RECORD)
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
+        viewModel.setInitialViewState(initialViewState)
+
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -53,11 +70,13 @@ class WordFragment : Fragment() {
 
         val editItem = menu?.findItem(R.id.action_edit)!!
         viewModel.getInitialViewState().apply {
+            initialViewState = this
             applyNewStateFor(this, editItem, original_word_text)
         }
 
         editItem.setOnMenuItemClickListener {
             viewModel.getNewState(original_word_text.text.toString()).apply {
+                initialViewState = this
                 applyNewStateFor(this, editItem, original_word_text)
             }
             return@setOnMenuItemClickListener true
@@ -71,16 +90,6 @@ class WordFragment : Fragment() {
 
             return@setOnMenuItemClickListener true
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = initViewModel(DICTIONARY_RECORD)
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-
-        return binding.root
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -138,5 +147,10 @@ class WordFragment : Fragment() {
                 Intent(activity, StorageUpdateService::class.java)
             )
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(VIEW_STATE, initialViewState)
     }
 }

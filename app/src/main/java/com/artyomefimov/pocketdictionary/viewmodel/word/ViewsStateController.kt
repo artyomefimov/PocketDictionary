@@ -8,12 +8,15 @@ class ViewsStateController(
 
     private var currentState: ViewState = ViewState.StableState
 
+    fun setInitialViewState(viewState: ViewState) {
+        currentState = viewState
+    }
+
     fun getInitialViewState(): ViewState {
         return if (dictionaryRecord.originalWord.isEmpty()) {
             currentState = ViewState.EditingState
             currentState
         } else {
-            currentState = ViewState.StableState
             currentState
         }
     }

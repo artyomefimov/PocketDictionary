@@ -2,9 +2,7 @@ package com.artyomefimov.pocketdictionary.viewmodel.word
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import android.view.View
-import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
@@ -36,13 +34,15 @@ class WordViewModel(
         translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
             changedTranslation = changedTranslation,
             position = position,
-            translationsLiveDataValue = translationsLiveData.value!!)
+            translationsLiveDataValue = translationsLiveData.value!!
+        )
     }
 
     fun deleteTranslation(translation: String) {
         translationsLiveData.value = translationsHandler.deleteTranslation(
             translation = translation,
-            translationsLiveDataValue = translationsLiveData.value!!)
+            translationsLiveDataValue = translationsLiveData.value!!
+        )
     }
 
     fun undoChanges(): ViewState {
@@ -50,9 +50,13 @@ class WordViewModel(
         return ViewState.StableState
     }
 
-    fun getInitialViewState(): ViewState {
-        return viewsStateController.getInitialViewState()
+    fun setInitialViewState(viewState: ViewState) {
+        viewsStateController.setInitialViewState(viewState)
     }
+
+    fun getInitialViewState(): ViewState =
+        viewsStateController.getInitialViewState()
+
 
     fun getNewState(changedWord: String): ViewState {
         val newState = viewsStateController.getNewState()

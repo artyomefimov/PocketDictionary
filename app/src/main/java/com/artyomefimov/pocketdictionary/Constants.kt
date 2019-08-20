@@ -5,10 +5,11 @@ import com.artyomefimov.pocketdictionary.utils.EnvironmentHelper
 const val BASE_URL = "https://api.mymemory.translated.net"
 val LOCAL_STORAGE_PATH = "${EnvironmentHelper.getExternalStorageDirectory()}/pocketdictionary.backup"
 
+const val CONFIRM_DELETION_DIALOG_TAG = "confirm_deletion_dialog"
 const val EDIT_TRANSLATION_DIALOG_TAG = "edit_translation_dialog"
 const val NEW_TRANSLATION_POSITION = -2
 
-const val CONFIRM_DELETION_DIALOG_TAG = "confirm_deletion_dialog"
+const val VIEW_STATE = "view_state"
 
 // request codes
 const val PERMISSIONS_REQUEST_CODE = 123
