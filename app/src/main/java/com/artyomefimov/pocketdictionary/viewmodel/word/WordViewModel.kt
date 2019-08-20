@@ -21,7 +21,8 @@ class WordViewModel(
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
-    val messageLiveData: MutableLiveData<Int> = MutableLiveData()
+    val toastMessageLiveData: MutableLiveData<Int> = MutableLiveData(),
+    val snackbarMessageLiveData: MutableLiveData<Pair<Int, String>> = MutableLiveData()
 ) : ViewModel() {
     init {
         originalWordLiveData.value = dictionaryRecord.originalWord
@@ -39,7 +40,7 @@ class WordViewModel(
                 translationsLiveDataValue = translationsLiveData.value!!
             )
         } catch (e: DuplicateTranslationException) {
-            messageLiveData.value = R.string.duplicate_translation
+            toastMessageLiveData.value = R.string.duplicate_translation
         }
     }
 
@@ -76,20 +77,20 @@ class WordViewModel(
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
         if (isLatinInputIncorrect(changedWord)) {
-            messageLiveData.value = R.string.incorrect_original_word
+            toastMessageLiveData.value = R.string.incorrect_original_word
             return ViewState.EditingState
         }
         if (isWordNotChanged(changedWord))
             return ViewState.StableState
 
         return if (isDuplicate(changedWord)) {
-            messageLiveData.value = R.string.duplicate_original_word
+            toastMessageLiveData.value = R.string.duplicate_original_word
             revertOriginalWord()
 
             ViewState.EditingState
         } else {
             originalWordLiveData.value = changedWord
-            loadOriginalWordTranslation(changedWord, LanguagePairs.FromEnglishToRussian)
+            snackbarMessageLiveData.value = R.string.is_api_request_needed to changedWord
 
             ViewState.StableState
         }
@@ -107,7 +108,7 @@ class WordViewModel(
         originalWordLiveData.value = previousWord
     }
 
-    private fun loadOriginalWordTranslation(originalWord: String, languagesPair: LanguagePairs) {
+    fun loadOriginalWordTranslation(originalWord: String, languagesPair: LanguagePairs) {
         subscription = repository.getTranslation(originalWord, languagesPair)
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
@@ -122,7 +123,7 @@ class WordViewModel(
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    messageLiveData.value = R.string.api_request_error
+                    toastMessageLiveData.value = R.string.api_request_error
                 })
     }
 

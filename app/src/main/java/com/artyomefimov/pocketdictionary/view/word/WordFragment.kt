@@ -12,8 +12,10 @@ import com.artyomefimov.pocketdictionary.*
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
+import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.view.shortToast
 import com.artyomefimov.pocketdictionary.utils.view.showDialog
+import com.artyomefimov.pocketdictionary.utils.view.snackbar
 import com.artyomefimov.pocketdictionary.view.adapters.TranslationsAdapter
 import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog.Companion.ELEMENT
@@ -119,8 +121,17 @@ class WordFragment : Fragment() {
                 .updateData(translations ?: listOf())
         })
 
-        viewModel.messageLiveData.observe(this, Observer { messageResId ->
+        viewModel.toastMessageLiveData.observe(this, Observer { messageResId ->
             shortToast(messageResId!!)
+        })
+
+        viewModel.snackbarMessageLiveData.observe(this, Observer { messageAndChangedWord ->
+            snackbar(messageAndChangedWord!!) {changedWord ->
+                viewModel.loadOriginalWordTranslation(
+                    changedWord,
+                    LanguagePairs.FromEnglishToRussian
+                )
+            }
         })
     }
 
