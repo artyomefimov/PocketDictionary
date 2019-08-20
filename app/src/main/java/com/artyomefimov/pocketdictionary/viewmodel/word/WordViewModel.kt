@@ -8,7 +8,8 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
-import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.OriginalWordHandler
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.Result
 import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
 import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.TranslationsHandler
 import io.reactivex.disposables.Disposable
@@ -18,6 +19,7 @@ class WordViewModel(
     private val repository: Repository,
     private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
     private val translationsHandler: TranslationsHandler = TranslationsHandler(),
+    private val originalWordHandler: OriginalWordHandler = OriginalWordHandler(repository),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
@@ -76,32 +78,27 @@ class WordViewModel(
         newState == ViewState.StableState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
-        if (isLatinInputIncorrect(changedWord)) {
-            toastMessageLiveData.value = R.string.incorrect_original_word
-            return ViewState.EditingState
-        }
-        if (isWordNotChanged(changedWord))
-            return ViewState.StableState
+        when(val result = originalWordHandler.handle(changedWord, originalWordLiveData.value!!)) {
+            is Result.LatinInputIncorrect -> {
+                toastMessageLiveData.value = result.messageResId
+                return result.viewState
+            }
+            is Result.OriginalWordNotChanged ->
+                return result.viewState
+            is Result.DuplicateOriginalWord -> {
+                toastMessageLiveData.value = result.messageResId
+                revertOriginalWord()
 
-        return if (isDuplicate(changedWord)) {
-            toastMessageLiveData.value = R.string.duplicate_original_word
-            revertOriginalWord()
+                return result.viewState
+            }
+            is Result.OriginalWordCorrectlyChanged -> {
+                originalWordLiveData.value = result.changedWord
+                snackbarMessageLiveData.value = result.snackbarMessageResId to result.changedWord
 
-            ViewState.EditingState
-        } else {
-            originalWordLiveData.value = changedWord
-            snackbarMessageLiveData.value = R.string.is_api_request_needed to changedWord
-
-            ViewState.StableState
+                return result.viewState
+            }
         }
     }
-
-    private fun isWordNotChanged(word: String): Boolean =
-        word == dictionaryRecord.originalWord
-
-    private fun isDuplicate(word: String): Boolean =
-        repository.getDictionaryRecord(word)
-            .originalWord.isNotEmpty()
 
     private fun revertOriginalWord() {
         val previousWord = originalWordLiveData.value
