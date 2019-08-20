@@ -9,6 +9,7 @@ import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
 import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.TranslationsHandler
 import io.reactivex.disposables.Disposable
 
@@ -31,11 +32,15 @@ class WordViewModel(
     private var subscription: Disposable? = null
 
     fun handleNewTranslationOnPosition(changedTranslation: String?, position: Int?) {
-        translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
-            changedTranslation = changedTranslation,
-            position = position,
-            translationsLiveDataValue = translationsLiveData.value!!
-        )
+        try {
+            translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
+                changedTranslation = changedTranslation,
+                position = position,
+                translationsLiveDataValue = translationsLiveData.value!!
+            )
+        } catch (e: DuplicateTranslationException) {
+            messageLiveData.value = R.string.duplicate_translation
+        }
     }
 
     fun deleteTranslation(translation: String) {
@@ -108,11 +113,12 @@ class WordViewModel(
             .subscribe(
                 { response ->
                     loadingVisibility.value = View.GONE
-                    translationsLiveData.value = translationsHandler.addTranslation(
-                        translation = response.responseData.translatedText,
-                        mutableTranslations = getMutableListOf(translationsLiveData.value!!)
-                    )
-                    messageLiveData.value = R.string.manual_adding_translations_proposal
+                    try {
+                        translationsLiveData.value = translationsHandler.addTranslation(
+                            translation = response.responseData.translatedText,
+                            mutableTranslations = getMutableListOf(translationsLiveData.value!!)
+                        )
+                    } catch (e: DuplicateTranslationException) { }
                 },
                 {
                     loadingVisibility.value = View.GONE

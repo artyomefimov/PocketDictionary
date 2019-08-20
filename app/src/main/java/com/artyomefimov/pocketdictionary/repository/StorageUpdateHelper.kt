@@ -4,7 +4,7 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
 fun performUpdate(repository: Repository, oldRecord: DictionaryRecord, newRecord: DictionaryRecord): Boolean {
     return when {
-        isNewRecordWasCreated(oldRecord) -> {
+        isNewRecordWasCreated(oldRecord, newRecord) -> {
             repository.addDictionaryRecord(newRecord)
             true
         }
@@ -20,8 +20,8 @@ fun performUpdate(repository: Repository, oldRecord: DictionaryRecord, newRecord
     }
 }
 
-private fun isNewRecordWasCreated(oldRecord: DictionaryRecord): Boolean =
-    oldRecord.originalWord.isEmpty()
+private fun isNewRecordWasCreated(oldRecord: DictionaryRecord, newRecord: DictionaryRecord): Boolean =
+    oldRecord.originalWord.isEmpty() && newRecord.originalWord.isNotEmpty()
 
 private fun isOnlyTranslationsWereUpdated(
     oldRecord: DictionaryRecord,
