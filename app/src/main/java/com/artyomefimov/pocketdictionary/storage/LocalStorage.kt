@@ -2,9 +2,10 @@ package com.artyomefimov.pocketdictionary.storage
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
+import java.util.*
 
 class LocalStorage(
-    var localDictionaryRecords: MutableMap<String, List<String>> = HashMap()
+    var localDictionaryRecords: MutableMap<String, List<String>> = TreeMap()
 ) {
     fun getDictionaryRecord(originalWord: String): DictionaryRecord {
         if (isNoSuchWordInDictionary(originalWord))

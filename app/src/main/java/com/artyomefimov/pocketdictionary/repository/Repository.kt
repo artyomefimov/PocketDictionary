@@ -11,6 +11,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,7 +50,7 @@ class Repository @Inject constructor(
             localFile.createNewFile()
 
         ObjectInputStream(FileInputStream(localFile)).use {
-            localStorage.localDictionaryRecords = it.readObject() as MutableMap<String, List<String>>
+            localStorage.localDictionaryRecords = it.readObject() as TreeMap<String, List<String>>
         }
     }
 
