@@ -20,6 +20,7 @@ class WordViewModel(
     ),
     private val translationsHandler: TranslationsHandler = TranslationsHandler(),
     private val originalWordHandler: OriginalWordHandler = OriginalWordHandler(repository),
+    var currentFavoriteTranslations: MutableList<String> = getMutableListOf(dictionaryRecord.favoriteTranslations),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
@@ -33,6 +34,9 @@ class WordViewModel(
     }
 
     private var subscription: Disposable? = null
+
+    fun updateFavoriteTranslations(translation: String) =
+        updateFavoriteTranslation(currentFavoriteTranslations, translation)
 
     fun handleNewTranslationOnPosition(changedTranslation: String?, position: Int?) {
         try {
@@ -127,7 +131,8 @@ class WordViewModel(
     fun updateDictionary(callUpdateService: () -> Unit) {
         val updatedDictionaryRecord = DictionaryRecord(
             originalWordLiveData.value!!,
-            translationsLiveData.value!!
+            translationsLiveData.value!!,
+            currentFavoriteTranslations
         )
         val isUpdated = repository.updateDictionaryRecord(dictionaryRecord, updatedDictionaryRecord)
         if (isUpdated)

@@ -10,20 +10,15 @@ class LocalStorageTest {
 
     @Before
     fun setUp() {
-        storage.localDictionaryRecords["dog"] = ArrayList<String>().apply {
-            add("собака")
-            add("пес")
-            add("песель")
-        }
-        storage.localDictionaryRecords["cat"] = ArrayList<String>().apply {
-            add("кошка")
-            add("кошак")
-            add("киса")
-        }
-        storage.localDictionaryRecords["bird"] = ArrayList<String>().apply {
-            add("птица")
-            add("птичка")
-        }
+        storage.localDictionaryRecords["dog"] = DictionaryRecord(
+            "dog",
+            listOf("собака", "пес", "песель"))
+        storage.localDictionaryRecords["cat"] = DictionaryRecord(
+            "cat",
+            listOf("кошка", "кошак", "киса"))
+        storage.localDictionaryRecords["bird"] = DictionaryRecord(
+            "bird",
+            listOf("птица", "птичка"))
     }
 
     @Test
@@ -57,7 +52,7 @@ class LocalStorageTest {
 
         storage.updateTranslations(newRecordWithNewTranslation)
 
-        assertTrue(storage.localDictionaryRecords["dog"]!!.contains("собачка"))
+        assertTrue(storage.localDictionaryRecords["dog"]!!.translations.contains("собачка"))
     }
 
     @Test

@@ -5,13 +5,13 @@ import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import java.util.*
 
 class LocalStorage(
-    var localDictionaryRecords: MutableMap<String, List<String>> = TreeMap()
+    var localDictionaryRecords: MutableMap<String, DictionaryRecord> = TreeMap()
 ) {
     fun getDictionaryRecord(originalWord: String): DictionaryRecord {
         if (isNoSuchWordInDictionary(originalWord))
             return DictionaryRecord()
 
-        return DictionaryRecord(originalWord, localDictionaryRecords[originalWord]!!)
+        return dictionaryRecordFromMap(originalWord)
     }
 
     fun addDictionaryRecords(dictionaryRecords: List<DictionaryRecord>) =
@@ -22,7 +22,7 @@ class LocalStorage(
     fun addDictionaryRecord(dictionaryRecord: DictionaryRecord) =
         localDictionaryRecords.put(
             dictionaryRecord.originalWord,
-            dictionaryRecord.translations as MutableList<String>
+            dictionaryRecord
         )
 
     fun updateTranslations(dictionaryRecord: DictionaryRecord) {
@@ -51,15 +51,19 @@ class LocalStorage(
     fun removeTranslation(originalWord: String, translation: String) {
         if (isNoSuchWordInDictionary(originalWord))
             return
-        val updatedTranslations = getMutableListOf(localDictionaryRecords[originalWord]!!)
+        val updatedTranslations = getMutableListOf(dictionaryRecordFromMap(originalWord).translations)
         updatedTranslations.remove(translation)
-        localDictionaryRecords[originalWord] = updatedTranslations
+        dictionaryRecordFromMap(originalWord).translations = updatedTranslations
     }
 
     private fun isNoSuchWordInDictionary(originalWord: String): Boolean =
         localDictionaryRecords[originalWord] == null
 
     private fun replaceTranslations(dictionaryRecord: DictionaryRecord) {
-        localDictionaryRecords[dictionaryRecord.originalWord] = dictionaryRecord.translations
+        dictionaryRecordFromMap(dictionaryRecord.originalWord).translations = dictionaryRecord.translations
+        dictionaryRecordFromMap(dictionaryRecord.originalWord).favoriteTranslations = dictionaryRecord.favoriteTranslations
     }
+
+    private fun dictionaryRecordFromMap(originalWord: String): DictionaryRecord =
+        localDictionaryRecords[originalWord]!!
 }

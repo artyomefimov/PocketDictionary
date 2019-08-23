@@ -46,9 +46,9 @@ class WordFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val serializable = savedInstanceState?.getSerializable(VIEW_STATE)
-        initialViewState = if (serializable != null) {
-            serializable as ViewState
+        val viewStateFromBundle = savedInstanceState?.getSerializable(VIEW_STATE)
+        initialViewState = if (viewStateFromBundle != null) {
+            viewStateFromBundle as ViewState
         } else ViewState.StableState
 
         setHasOptionsMenu(true)
@@ -100,12 +100,15 @@ class WordFragment : Fragment() {
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter =
-            TranslationsAdapter<String>(ArrayList(),
+            TranslationsAdapter<String>(ArrayList(), viewModel.currentFavoriteTranslations,
                 onClickAction = { translation, position ->
                     showDialog<EditTranslationDialog>(translation, position)
                 },
                 onLongClickAction = { translation ->
                     showDialog<ConfirmDeletionDialog>(translation, -1)
+                },
+                onTranslationChecked = { translation->
+                    viewModel.updateFavoriteTranslations(translation)
                 })
 
         fab_add_translation.setOnClickListener {

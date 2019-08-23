@@ -7,7 +7,13 @@ fun <T>getMutableListOf(immutableList: List<T>) =
         immutableList.forEach { this.add(it) }
     }
 
-fun convertMapToList(map: Map<String, List<String>>): List<DictionaryRecord> =
-    map.map {
-        DictionaryRecord(it.key, it.value)
+fun getTwoFavoriteTranslationsAsString(dictionaryRecord: DictionaryRecord): String {
+    return when {
+        dictionaryRecord.favoriteTranslations.size == 1 ->
+            dictionaryRecord.favoriteTranslations[0]
+        dictionaryRecord.favoriteTranslations.size >= 2 ->
+            "${dictionaryRecord.favoriteTranslations[0]}, ${dictionaryRecord.favoriteTranslations[1]}"
+        else ->
+            dictionaryRecord.translations.getOrElse(0) {""}
     }
+}

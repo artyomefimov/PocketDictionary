@@ -6,7 +6,6 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.model.Response
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
-import com.artyomefimov.pocketdictionary.utils.convertMapToList
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -27,17 +26,19 @@ class Repository @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
-    fun getDictionary(): Single<List<DictionaryRecord>> {
+    @Suppress("UNCHECKED_CAST")
+    fun getDictionary(): Single<ArrayList<DictionaryRecord>> {
         if (localStorage.localDictionaryRecords.isNotEmpty()) {
             return Single.fromCallable {
-                return@fromCallable convertMapToList(localStorage.localDictionaryRecords)
+                val values = localStorage.localDictionaryRecords.values
+                return@fromCallable ArrayList(localStorage.localDictionaryRecords.values)
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
         } else {
             return Single.fromCallable {
                 readDictionaryFromLocalFile()
-                return@fromCallable convertMapToList(localStorage.localDictionaryRecords)
+                return@fromCallable ArrayList(localStorage.localDictionaryRecords.values)
             }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -50,7 +51,7 @@ class Repository @Inject constructor(
             localFile.createNewFile()
 
         ObjectInputStream(FileInputStream(localFile)).use {
-            localStorage.localDictionaryRecords = it.readObject() as TreeMap<String, List<String>>
+            localStorage.localDictionaryRecords = it.readObject() as TreeMap<String, DictionaryRecord>
         }
     }
 
