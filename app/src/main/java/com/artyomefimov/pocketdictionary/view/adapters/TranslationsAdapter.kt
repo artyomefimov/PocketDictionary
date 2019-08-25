@@ -42,10 +42,10 @@ class TranslationsViewHolder<T>(
 
             favorite_translation.isChecked = favoriteTranslations.contains(translation)
 
-            setOnClickListener {
+            translation_text.setOnClickListener {
                 onClickAction(translation, position)
             }
-            setOnLongClickListener {
+            translation_text.setOnLongClickListener {
                 onLongClickAction(translation)
                 true
             }
