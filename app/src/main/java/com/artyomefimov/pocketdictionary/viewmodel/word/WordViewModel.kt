@@ -55,6 +55,7 @@ class WordViewModel(
             translation = translation,
             translationsLiveDataValue = translationsLiveData.value!!
         )
+        currentFavoriteTranslations.remove(translation)
     }
 
     fun undoChanges(): ViewState {
