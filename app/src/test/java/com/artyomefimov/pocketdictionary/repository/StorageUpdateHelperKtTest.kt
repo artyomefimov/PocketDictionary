@@ -29,7 +29,16 @@ class StorageUpdateHelperKtTest {
     @Test
     fun testTranslationsAreUpdatedIfOriginalWordsAreEqual() {
         val oldRecord = DictionaryRecord("equal word")
-        val newRecord = DictionaryRecord("equal word", ArrayList<String>().apply { add("any") })
+        val newRecord = DictionaryRecord("equal word", listOf("any"))
+        performUpdate(repository, oldRecord, newRecord)
+
+        verify(repository).updateTranslations(eq(newRecord))
+    }
+
+    @Test
+    fun testTranslationsAreUpdatedIfFavoriteTranslationsWereChanged() {
+        val oldRecord = DictionaryRecord("equal word", listOf("any"), mutableListOf())
+        val newRecord = DictionaryRecord("equal word", listOf("any"), mutableListOf("some favorite"))
         performUpdate(repository, oldRecord, newRecord)
 
         verify(repository).updateTranslations(eq(newRecord))
@@ -37,8 +46,8 @@ class StorageUpdateHelperKtTest {
 
     @Test
     fun testNothingIsHappenedIfRecordsAreEqual() {
-        val oldRecord = DictionaryRecord("equal word", ArrayList<String>().apply { add("any") })
-        val newRecord = DictionaryRecord("equal word", ArrayList<String>().apply { add("any") })
+        val oldRecord = DictionaryRecord("equal word", listOf("any"))
+        val newRecord = DictionaryRecord("equal word", listOf("any"))
 
         performUpdate(repository, oldRecord, newRecord)
 

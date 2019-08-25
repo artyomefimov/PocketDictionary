@@ -39,4 +39,9 @@ class InputControllerKtTest {
     fun testIfEmptyInputIsIncorrect() {
         assertFalse(isLatinInputCorrect(""))
     }
+
+    @Test
+    fun testIfCyrillicInputCorrect() {
+        assertTrue(isCyrillicInputCorrect("жёсткий"))
+    }
 }

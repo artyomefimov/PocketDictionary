@@ -2,27 +2,30 @@ package com.artyomefimov.pocketdictionary.viewmodel.word
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import android.view.View
-import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
-import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
-import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.TranslationsHandler
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.*
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
 import io.reactivex.disposables.Disposable
 
 class WordViewModel(
     private val dictionaryRecord: DictionaryRecord,
     private val repository: Repository,
-    private val viewsStateController: ViewsStateController = ViewsStateController(dictionaryRecord),
+    private val viewStateController: ViewStateController = ViewStateController(
+        dictionaryRecord
+    ),
     private val translationsHandler: TranslationsHandler = TranslationsHandler(),
+    private val originalWordHandler: OriginalWordHandler = OriginalWordHandler(repository),
+    var currentFavoriteTranslations: MutableList<String> = getMutableListOf(dictionaryRecord.favoriteTranslations),
     val translationsLiveData: MutableLiveData<List<String>> = MutableLiveData(),
     val originalWordLiveData: MutableLiveData<String> = MutableLiveData(),
     val loadingVisibility: MutableLiveData<Int> = MutableLiveData(),
-    val messageLiveData: MutableLiveData<Int> = MutableLiveData()
+    val toastMessageLiveData: MutableLiveData<Int> = MutableLiveData(),
+    val snackbarMessageLiveData: MutableLiveData<Pair<Int, String>> = MutableLiveData()
 ) : ViewModel() {
     init {
         originalWordLiveData.value = dictionaryRecord.originalWord
@@ -32,17 +35,27 @@ class WordViewModel(
 
     private var subscription: Disposable? = null
 
+    fun updateFavoriteTranslations(translation: String) =
+        updateFavoriteTranslation(currentFavoriteTranslations, translation)
+
     fun handleNewTranslationOnPosition(changedTranslation: String?, position: Int?) {
-        translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
-            changedTranslation = changedTranslation,
-            position = position,
-            translationsLiveDataValue = translationsLiveData.value!!)
+        try {
+            translationsLiveData.value = translationsHandler.handleNewTranslationOnPosition(
+                changedTranslation = changedTranslation,
+                position = position,
+                translationsLiveDataValue = translationsLiveData.value!!
+            )
+        } catch (e: DuplicateTranslationException) {
+            toastMessageLiveData.value = R.string.duplicate_translation
+        }
     }
 
     fun deleteTranslation(translation: String) {
         translationsLiveData.value = translationsHandler.deleteTranslation(
             translation = translation,
-            translationsLiveDataValue = translationsLiveData.value!!)
+            translationsLiveDataValue = translationsLiveData.value!!
+        )
+        currentFavoriteTranslations.remove(translation)
     }
 
     fun undoChanges(): ViewState {
@@ -50,12 +63,16 @@ class WordViewModel(
         return ViewState.StableState
     }
 
-    fun getInitialViewState(): ViewState {
-        return viewsStateController.getInitialViewState()
+    fun setInitialViewState(viewState: ViewState) {
+        viewStateController.setInitialViewState(viewState)
     }
 
+    fun getInitialViewState(): ViewState =
+        viewStateController.getInitialViewState()
+
+
     fun getNewState(changedWord: String): ViewState {
-        val newState = viewsStateController.getNewState()
+        val newState = viewStateController.getNewState()
         return if (isOriginalWordUpdateWasFinished(newState))
             handleChangedOriginalWord(changedWord.trim())
         else
@@ -66,60 +83,57 @@ class WordViewModel(
         newState == ViewState.StableState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
-        if (isLatinInputIncorrect(changedWord)) {
-            messageLiveData.value = R.string.incorrect_original_word
-            return ViewState.EditingState
-        }
-        if (isWordNotChanged(changedWord))
-            return ViewState.StableState
+        when(val result = originalWordHandler.handle(changedWord, dictionaryRecord.originalWord)) {
+            is Result.LatinInputIncorrect -> {
+                toastMessageLiveData.value = result.messageResId
+                return result.viewState
+            }
+            is Result.OriginalWordNotChanged ->
+                return result.viewState
+            is Result.DuplicateOriginalWord -> {
+                toastMessageLiveData.value = result.messageResId
+                revertOriginalWord()
 
-        return if (isDuplicate(changedWord)) {
-            messageLiveData.value = R.string.duplicate_original_word
-            revertOriginalWord()
+                return result.viewState
+            }
+            is Result.OriginalWordCorrectlyChanged -> {
+                originalWordLiveData.value = result.changedWord
+                snackbarMessageLiveData.value = result.snackbarMessageResId to result.changedWord
 
-            ViewState.EditingState
-        } else {
-            originalWordLiveData.value = changedWord
-            loadOriginalWordTranslation(changedWord, LanguagePairs.FromEnglishToRussian)
-
-            ViewState.StableState
+                return result.viewState
+            }
         }
     }
-
-    private fun isWordNotChanged(word: String): Boolean =
-        word == dictionaryRecord.originalWord
-
-    private fun isDuplicate(word: String): Boolean =
-        repository.getDictionaryRecord(word)
-            .originalWord.isNotEmpty()
 
     private fun revertOriginalWord() {
         val previousWord = originalWordLiveData.value
         originalWordLiveData.value = previousWord
     }
 
-    private fun loadOriginalWordTranslation(originalWord: String, languagesPair: LanguagePairs) {
+    fun loadOriginalWordTranslation(originalWord: String, languagesPair: LanguagePairs) {
         subscription = repository.getTranslation(originalWord, languagesPair)
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
                 { response ->
                     loadingVisibility.value = View.GONE
-                    translationsLiveData.value = translationsHandler.addTranslation(
-                        translation = response.responseData.translatedText,
-                        mutableTranslations = getMutableListOf(translationsLiveData.value!!)
-                    )
-                    messageLiveData.value = R.string.manual_adding_translations_proposal
+                    try {
+                        translationsLiveData.value = translationsHandler.addTranslation(
+                            translation = response.responseData.translatedText,
+                            mutableTranslations = getMutableListOf(translationsLiveData.value!!)
+                        )
+                    } catch (e: DuplicateTranslationException) { }
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    messageLiveData.value = R.string.api_request_error
+                    toastMessageLiveData.value = R.string.api_request_error
                 })
     }
 
     fun updateDictionary(callUpdateService: () -> Unit) {
         val updatedDictionaryRecord = DictionaryRecord(
             originalWordLiveData.value!!,
-            translationsLiveData.value!!
+            translationsLiveData.value!!,
+            currentFavoriteTranslations
         )
         val isUpdated = repository.updateDictionaryRecord(dictionaryRecord, updatedDictionaryRecord)
         if (isUpdated)

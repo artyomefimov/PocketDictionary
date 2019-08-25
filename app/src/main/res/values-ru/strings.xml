@@ -21,4 +21,6 @@
     <string name="incorrect_original_word">Слово для перевода должно содержать только латинские символы и пробелы</string>
     <string name="incorrect_translation">Перевод должен состоять из кириллицы и пробелов</string>
     <string name="api_request_error">Невозможно загрузить перевод. Вы можете добавлять переводы вручную</string>
+    <string name="duplicate_translation">Такой перевод уже есть</string>
+    <string name="is_api_request_needed">Перевести измененное слово?</string>
 </resources>

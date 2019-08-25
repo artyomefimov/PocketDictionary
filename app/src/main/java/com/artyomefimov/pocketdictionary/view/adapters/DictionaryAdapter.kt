@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
+import com.artyomefimov.pocketdictionary.utils.getTwoFavoriteTranslationsAsString
 import kotlinx.android.synthetic.main.list_item_word.view.*
 
 class WordListAdapter<T>(
@@ -35,7 +36,7 @@ private class WordListViewHolder<T>(
         with(itemView) {
             val dictionaryRecord = item as DictionaryRecord
             original_word_list_item.text = dictionaryRecord.originalWord
-            translations_list_item.text = dictionaryRecord.translations.getOrElse(0) { "" }
+            translations_list_item.text = getTwoFavoriteTranslationsAsString(dictionaryRecord)
 
             setOnClickListener {
                 onClickAction(dictionaryRecord)

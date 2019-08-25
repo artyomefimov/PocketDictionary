@@ -8,15 +8,17 @@ import kotlinx.android.synthetic.main.list_item_translation.view.*
 
 class TranslationsAdapter<T>(
     translations: List<T>,
+    private val favoriteTranslations: List<String>,
     private val onClickAction: (String, Int) -> Unit,
-    private val onLongClickAction: (String) -> Unit
+    private val onLongClickAction: (String) -> Unit,
+    private val onTranslationChecked: (String) -> Unit
 ) :
     AbstractAdapter<T>(translations) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TranslationsViewHolder<T> {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item_translation, parent, false)
-        return TranslationsViewHolder(itemView, onClickAction)
+        return TranslationsViewHolder(itemView, favoriteTranslations, onClickAction, onTranslationChecked)
     }
 
     override fun getItemCount(): Int =
@@ -28,20 +30,27 @@ class TranslationsAdapter<T>(
 
 class TranslationsViewHolder<T>(
     itemView: View,
-    private val onClickAction: (translation: String, position: Int) -> Unit
+    private val favoriteTranslations: List<String>,
+    private val onClickAction: (translation: String, position: Int) -> Unit,
+    private val onTranslationChecked: (String) -> Unit
 ) : AbstractViewHolder<T>(itemView) {
 
     override fun bind(item: T, position: Int, onLongClickAction: (String) -> Unit) {
         with(itemView) {
             val translation = item as String
-
             translation_text.text = translation
-            setOnClickListener {
+
+            favorite_translation.isChecked = favoriteTranslations.contains(translation)
+
+            translation_text.setOnClickListener {
                 onClickAction(translation, position)
             }
-            setOnLongClickListener {
+            translation_text.setOnLongClickListener {
                 onLongClickAction(translation)
                 true
+            }
+            favorite_translation.setOnClickListener {
+                onTranslationChecked(translation)
             }
         }
     }

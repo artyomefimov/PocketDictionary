@@ -15,7 +15,8 @@
             android:theme="@style/AppTheme"
             android:fullBackupContent="false"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.MainActivity"
+                  android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

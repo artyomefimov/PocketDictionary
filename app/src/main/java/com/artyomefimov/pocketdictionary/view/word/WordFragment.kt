@@ -8,21 +8,21 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
-import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
-import com.artyomefimov.pocketdictionary.R
+import com.artyomefimov.pocketdictionary.*
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.services.StorageUpdateService
+import com.artyomefimov.pocketdictionary.utils.LanguagePairs
 import com.artyomefimov.pocketdictionary.utils.view.shortToast
 import com.artyomefimov.pocketdictionary.utils.view.showDialog
+import com.artyomefimov.pocketdictionary.utils.view.snackbar
 import com.artyomefimov.pocketdictionary.view.adapters.TranslationsAdapter
 import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog.Companion.ELEMENT
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.TRANSLATION
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 import kotlinx.android.synthetic.main.fragment_word.*
 
@@ -41,10 +41,29 @@ class WordFragment : Fragment() {
 
     private lateinit var binding: FragmentWordBindingImpl
     private lateinit var viewModel: WordViewModel
+    private lateinit var initialViewState: ViewState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewStateFromBundle = savedInstanceState?.getSerializable(VIEW_STATE)
+        initialViewState = if (viewStateFromBundle != null) {
+            viewStateFromBundle as ViewState
+        } else ViewState.StableState
+
         setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = initViewModel(DICTIONARY_RECORD)
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
+        viewModel.setInitialViewState(initialViewState)
+
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -53,11 +72,13 @@ class WordFragment : Fragment() {
 
         val editItem = menu?.findItem(R.id.action_edit)!!
         viewModel.getInitialViewState().apply {
+            initialViewState = this
             applyNewStateFor(this, editItem, original_word_text)
         }
 
         editItem.setOnMenuItemClickListener {
             viewModel.getNewState(original_word_text.text.toString()).apply {
+                initialViewState = this
                 applyNewStateFor(this, editItem, original_word_text)
             }
             return@setOnMenuItemClickListener true
@@ -73,28 +94,21 @@ class WordFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = initViewModel(DICTIONARY_RECORD)
-
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-
-        return binding.root
-    }
-
     @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
         recycler_view_translations.adapter =
-            TranslationsAdapter<String>(ArrayList(),
+            TranslationsAdapter<String>(ArrayList(), viewModel.currentFavoriteTranslations,
                 onClickAction = { translation, position ->
                     showDialog<EditTranslationDialog>(translation, position)
                 },
                 onLongClickAction = { translation ->
                     showDialog<ConfirmDeletionDialog>(translation, -1)
+                },
+                onTranslationChecked = { translation->
+                    viewModel.updateFavoriteTranslations(translation)
                 })
 
         fab_add_translation.setOnClickListener {
@@ -110,8 +124,17 @@ class WordFragment : Fragment() {
                 .updateData(translations ?: listOf())
         })
 
-        viewModel.messageLiveData.observe(this, Observer { messageResId ->
+        viewModel.toastMessageLiveData.observe(this, Observer { messageResId ->
             shortToast(messageResId!!)
+        })
+
+        viewModel.snackbarMessageLiveData.observe(this, Observer { messageAndChangedWord ->
+            snackbar(messageAndChangedWord!!) {changedWord ->
+                viewModel.loadOriginalWordTranslation(
+                    changedWord,
+                    LanguagePairs.FromEnglishToRussian
+                )
+            }
         })
     }
 
@@ -138,5 +161,10 @@ class WordFragment : Fragment() {
                 Intent(activity, StorageUpdateService::class.java)
             )
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(VIEW_STATE, initialViewState)
     }
 }

@@ -3,6 +3,7 @@ package com.artyomefimov.pocketdictionary.viewmodel.word.handlers
 import android.util.Log
 import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
 
 class TranslationsHandler {
     private companion object {
@@ -35,9 +36,15 @@ class TranslationsHandler {
         translation: String,
         mutableTranslations: MutableList<String>
     ): MutableList<String> {
-        mutableTranslations.add(translation)
+        if (isNewTranslationNotDuplicate(translation, mutableTranslations))
+            mutableTranslations.add(translation)
+        else
+            throw DuplicateTranslationException()
         return mutableTranslations
     }
+
+    private fun isNewTranslationNotDuplicate(translation: String, mutableTranslations: MutableList<String>) =
+        !mutableTranslations.contains(translation)
 
     private fun changeTranslation(
         changedTranslation: String?,
