@@ -14,6 +14,10 @@ import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Performs requests to translate API and operates with
+ * local storage(reading dictionary from file, CRUD operations with dictionary records)
+ */
 @Singleton
 class Repository @Inject constructor(
     private val translateApi: TranslateApi,
@@ -30,7 +34,6 @@ class Repository @Inject constructor(
     fun getDictionary(): Single<ArrayList<DictionaryRecord>> {
         if (localStorage.localDictionaryRecords.isNotEmpty()) {
             return Single.fromCallable {
-                val values = localStorage.localDictionaryRecords.values
                 return@fromCallable ArrayList(localStorage.localDictionaryRecords.values)
             }
                 .subscribeOn(Schedulers.io())

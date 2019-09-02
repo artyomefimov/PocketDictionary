@@ -5,6 +5,9 @@ import com.artyomefimov.pocketdictionary.NEW_TRANSLATION_POSITION
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.exceptions.DuplicateTranslationException
 
+/**
+ * Handles actions that are performed on translations (deletion, adding, changing)
+ */
 class TranslationsHandler {
     private companion object {
         const val TAG = "TranslationsHandler"
@@ -19,6 +22,7 @@ class TranslationsHandler {
         return mutableTranslations
     }
 
+    @Throws(DuplicateTranslationException::class)
     fun handleNewTranslationOnPosition(
         changedTranslation: String?,
         position: Int?,
@@ -32,6 +36,7 @@ class TranslationsHandler {
             changeTranslation(changedTranslation, position, mutableTranslations)
     }
 
+    @Throws(DuplicateTranslationException::class)
     fun addTranslation(
         translation: String,
         mutableTranslations: MutableList<String>

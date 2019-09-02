@@ -2,6 +2,11 @@ package com.artyomefimov.pocketdictionary.repository
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
+/**
+ * Detects changes in a dictionary record by comparing its old and new versions and
+ * delegates to the repository the execution of the specified action based on the detection result
+ * @return [true] if the action was delegated to the repository, [false] otherwise
+ */
 fun performUpdate(
     repository: Repository,
     oldRecord: DictionaryRecord,
@@ -33,10 +38,13 @@ private fun isNewRecordWasCreated(
 private fun isOnlyTranslationsWereUpdated(
     oldRecord: DictionaryRecord,
     newRecord: DictionaryRecord
-): Boolean =
-    (oldRecord.originalWord == newRecord.originalWord) &&
-            ((oldRecord.translations != newRecord.translations)
-                    || (oldRecord.favoriteTranslations != newRecord.favoriteTranslations))
+): Boolean {
+    val originalWordsAreEqual = oldRecord.originalWord == newRecord.originalWord
+    val translationsWereChanged = oldRecord.translations != newRecord.translations
+    val favoriteTranslationsWereChanged = oldRecord.favoriteTranslations != newRecord.favoriteTranslations
+
+    return originalWordsAreEqual and (translationsWereChanged or favoriteTranslationsWereChanged)
+}
 
 private fun isOriginalWordWasChanged(
     oldRecord: DictionaryRecord,

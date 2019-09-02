@@ -1,25 +1,14 @@
 package com.artyomefimov.pocketdictionary.utils.view
 
-import android.content.ContextWrapper
 import android.content.Intent
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
-import android.view.View
-import com.artyomefimov.pocketdictionary.*
-import com.artyomefimov.pocketdictionary.view.MainActivity
+import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
+import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_TAG
+import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
+import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_TAG
 import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
-
-fun View.getParentFragment(): Fragment? {
-    var context = this.context
-    while (context is ContextWrapper) {
-        if (context is MainActivity) {
-            return context.supportFragmentManager.findFragmentById(R.id.fragment_container)
-        }
-        context = context.baseContext
-    }
-    return null
-}
 
 fun DialogFragment.sendResult(resultCode: Int, intent: Intent) =
     targetFragment?.onActivityResult(
@@ -31,13 +20,13 @@ fun DialogFragment.sendResult(resultCode: Int, intent: Intent) =
 inline fun <reified T : DialogFragment> Fragment.showDialog(stringValue: String, position: Int) {
     when (T::class) {
         EditTranslationDialog::class ->
-            configureAndShow(
+            configureAndShowDialog(
                 EditTranslationDialog.newInstance(stringValue, position),
                 EDIT_TRANSLATION_DIALOG_REQUEST_CODE,
                 EDIT_TRANSLATION_DIALOG_TAG
             )
         ConfirmDeletionDialog::class ->
-            configureAndShow(
+            configureAndShowDialog(
                 ConfirmDeletionDialog.newInstance(stringValue),
                 CONFIRM_DELETION_DIALOG_REQUEST_CODE,
                 CONFIRM_DELETION_DIALOG_TAG
@@ -45,7 +34,7 @@ inline fun <reified T : DialogFragment> Fragment.showDialog(stringValue: String,
     }
 }
 
-fun Fragment.configureAndShow(dialog: DialogFragment, requestCode: Int, tag: String) {
+fun Fragment.configureAndShowDialog(dialog: DialogFragment, requestCode: Int, tag: String) {
     dialog.setTargetFragment(
         this,
         requestCode

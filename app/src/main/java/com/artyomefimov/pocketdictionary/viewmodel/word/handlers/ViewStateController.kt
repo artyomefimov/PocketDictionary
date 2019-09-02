@@ -3,6 +3,9 @@ package com.artyomefimov.pocketdictionary.viewmodel.word.handlers
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
+/**
+ * Handles view state and returns a new state according to a current state
+ */
 class ViewStateController(
     private val dictionaryRecord: DictionaryRecord
 ) {

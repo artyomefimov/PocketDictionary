@@ -2,11 +2,17 @@ package com.artyomefimov.pocketdictionary.utils
 
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 
+/**
+ * Converts immutable list to mutable
+ */
 fun <T>getMutableListOf(immutableList: List<T>) =
     mutableListOf<T>().apply {
         immutableList.forEach { this.add(it) }
     }
 
+/**
+ * Shows favorite translations for [dictionaryRecord] in the list view
+ */
 fun getTwoFavoriteTranslationsAsString(dictionaryRecord: DictionaryRecord): String {
     return when {
         dictionaryRecord.favoriteTranslations.size == 1 ->

@@ -12,6 +12,9 @@ fun search(query: String?, dictionary: List<DictionaryRecord>): Single<List<Dict
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
 
+/**
+ * Finds records in the dictionary which original words match specified [query]
+ */
 internal fun getSearchResult(query: String?, dictionary: List<DictionaryRecord>): List<DictionaryRecord> {
     if (query == null)
         return ArrayList()

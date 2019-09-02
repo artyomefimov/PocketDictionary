@@ -5,9 +5,12 @@ import android.content.Intent
 import android.util.Log
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 
+/**
+ * Saves current dictionary to a local file in a background
+ */
 class StorageUpdateService : IntentService(TAG) {
     private companion object {
-        internal const val TAG = "StorageUpdateService"
+        private const val TAG = "StorageUpdateService"
     }
 
     override fun onHandleIntent(intent: Intent?) {

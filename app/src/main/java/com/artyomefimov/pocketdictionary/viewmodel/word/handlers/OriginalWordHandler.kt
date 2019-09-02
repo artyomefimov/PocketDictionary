@@ -4,6 +4,9 @@ import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
 
+/**
+ * Handles changes of the original word by comparing its old and new versions
+ */
 class OriginalWordHandler(private val repository: Repository) {
     fun handle(changedWord: String, originalWord: String): Result {
         return when {

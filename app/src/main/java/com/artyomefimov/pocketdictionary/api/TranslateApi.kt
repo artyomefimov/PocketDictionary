@@ -6,6 +6,11 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Requests translation for specified word from https://api.mymemory.translated.net
+ * @param [originalWord] a word for which translation will be requested
+ * @param [languagesPair] a pair of a language of an original word and a target language of translation
+ */
 interface TranslateApi {
     @GET("/get")
     fun getTranslation(
