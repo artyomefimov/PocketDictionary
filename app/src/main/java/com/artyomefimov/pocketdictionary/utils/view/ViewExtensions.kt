@@ -17,7 +17,7 @@ fun DialogFragment.sendResult(resultCode: Int, intent: Intent) =
         intent
     )
 
-inline fun <reified T : DialogFragment> Fragment.showDialog(stringValue: String, position: Int) {
+inline fun <reified T : DialogFragment> Fragment.showDialog(stringValue: String?, position: Int) {
     when (T::class) {
         EditTranslationDialog::class ->
             configureAndShowDialog(

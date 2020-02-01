@@ -12,13 +12,16 @@ class LocalStorageTest {
     fun setUp() {
         storage.localDictionaryRecords["dog"] = DictionaryRecord(
             "dog",
-            listOf("собака", "пес", "песель"))
+            listOf("собака", "пес", "песель")
+        )
         storage.localDictionaryRecords["cat"] = DictionaryRecord(
             "cat",
-            listOf("кошка", "кошак", "киса"))
+            listOf("кошка", "кошак", "киса")
+        )
         storage.localDictionaryRecords["bird"] = DictionaryRecord(
             "bird",
-            listOf("птица", "птичка"))
+            listOf("птица", "птичка")
+        )
     }
 
     @Test
@@ -28,15 +31,15 @@ class LocalStorageTest {
 
     @Test
     fun testGettingTranslationsForExistingWord() {
-        assertEquals(3, storage.getDictionaryRecord("dog").translations.size)
+        assertEquals(3, storage.getDictionaryRecord("dog")?.translations?.size)
     }
 
     @Test
     fun testAddNewDictionaryRecord() {
         val newRecord = DictionaryRecord(
-                "wolf",
-                ArrayList<String>().apply { add("wolf") }
-            )
+            "wolf",
+            ArrayList<String>().apply { add("wolf") }
+        )
 
         storage.addDictionaryRecord(newRecord)
 
@@ -52,7 +55,7 @@ class LocalStorageTest {
 
         storage.updateTranslations(newRecordWithNewTranslation)
 
-        assertTrue(storage.localDictionaryRecords["dog"]!!.translations.contains("собачка"))
+        assertTrue(storage.localDictionaryRecords["dog"]?.translations?.contains("собачка") ?: false)
     }
 
     @Test
@@ -67,15 +70,20 @@ class LocalStorageTest {
 
         storage.updateTranslations(newRecordWithNewAndExistingTranslation)
 
-        assertTrue(storage.getDictionaryRecord("dog")
-            .translations.contains("собачка"))
+        assertTrue(
+            storage.getDictionaryRecord("dog")
+                ?.translations?.contains("собачка")
+                ?: throw java.lang.Exception("storage.getDictionaryRecord returned null!")
+        )
 
         assertEquals(1,
             storage.getDictionaryRecord("dog")
-            .translations.count { it == "собака" })
+                ?.translations?.count { it == "собака" })
 
-        assertEquals(newRecordWithNewAndExistingTranslation.translations,
-            storage.getDictionaryRecord("dog").translations)
+        assertEquals(
+            newRecordWithNewAndExistingTranslation.translations,
+            storage.getDictionaryRecord("dog")?.translations
+        )
     }
 
     @Test
@@ -98,7 +106,10 @@ class LocalStorageTest {
     fun testRemoveTranslationForExistingRecord() {
         storage.removeTranslation("cat", "кошак")
 
-        assertFalse(storage.getDictionaryRecord("cat")
-            .translations.contains("кошак"))
+        assertFalse(
+            storage.getDictionaryRecord("cat")
+                ?.translations?.contains("кошак")
+                ?: throw java.lang.Exception("storage.getDictionaryRecord returned null!")
+        )
     }
 }

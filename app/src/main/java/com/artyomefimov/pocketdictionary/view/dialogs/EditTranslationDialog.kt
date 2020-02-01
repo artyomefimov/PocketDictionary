@@ -19,7 +19,7 @@ class EditTranslationDialog : DialogFragment() {
         const val POSITION = "position"
 
         @JvmStatic
-        fun newInstance(translation: String, position: Int): EditTranslationDialog =
+        fun newInstance(translation: String?, position: Int): EditTranslationDialog =
             EditTranslationDialog().apply {
                 arguments = Bundle().apply {
                     putString(TRANSLATION, translation)
@@ -29,8 +29,8 @@ class EditTranslationDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val position = arguments?.getInt(POSITION)!!
-        val translation = arguments?.getString(TRANSLATION)!!
+        val position = arguments?.getInt(POSITION)
+        val translation = arguments?.getString(TRANSLATION)
 
         val view = LayoutInflater.from(activity).inflate(pdR.layout.dialog_edit_translation, null)
 

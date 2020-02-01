@@ -15,7 +15,7 @@ class WordListViewModelFactory(private val repository: Repository) : ViewModelPr
 }
 
 class WordViewModelFactory(
-    private val dictionaryRecord: DictionaryRecord,
+    private val dictionaryRecord: DictionaryRecord?,
     private val repository: Repository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =

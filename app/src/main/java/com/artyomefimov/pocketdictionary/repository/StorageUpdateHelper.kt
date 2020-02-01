@@ -9,9 +9,14 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
  */
 fun performUpdate(
     repository: Repository,
-    oldRecord: DictionaryRecord,
+    oldRecord: DictionaryRecord?,
     newRecord: DictionaryRecord
 ): Boolean {
+    if (oldRecord == null) {
+        repository.addDictionaryRecord(newRecord)
+        return true
+    }
+
     return when {
         isNewRecordWasCreated(oldRecord, newRecord) -> {
             repository.addDictionaryRecord(newRecord)

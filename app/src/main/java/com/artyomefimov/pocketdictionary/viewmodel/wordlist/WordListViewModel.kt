@@ -36,7 +36,7 @@ class WordListViewModel(
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    Log.e(TAG, "exception during dictionary loading", it)
+                    Log.e(TAG, "Exception during dictionary loading: ", it)
                     if (it !is EOFException)
                         messageLiveData.value = R.string.local_loading_error
                 })
@@ -55,17 +55,19 @@ class WordListViewModel(
                 },
                 {
                     loadingVisibility.value = View.GONE
-                    Log.e(TAG, "Exception occurred during search", it)
+                    Log.e(TAG, "Exception during search: ", it)
                 })
     }
 
-    fun deleteDictionaryRecord(originalWord: String, callUpdateService: () -> Unit) {
-        val dictionary = getMutableListOf(dictionaryLiveData.value!!)
+    fun deleteDictionaryRecord(originalWord: String?, callUpdateService: () -> Unit) {
+        val dictionary = getMutableListOf(dictionaryLiveData.value)
         dictionary.removeAll { it.originalWord == originalWord }
         dictionaryLiveData.value = dictionary
 
         repository.removeDictionaryRecord(originalWord)
-        callUpdateService()
+
+        if (originalWord != null)
+            callUpdateService()
     }
 
     override fun onCleared() {

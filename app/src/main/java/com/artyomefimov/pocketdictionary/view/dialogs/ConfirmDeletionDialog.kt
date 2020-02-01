@@ -15,7 +15,7 @@ class ConfirmDeletionDialog : DialogFragment() {
         const val ELEMENT = "element"
 
         @JvmStatic
-        fun newInstance(element: String): ConfirmDeletionDialog =
+        fun newInstance(element: String?): ConfirmDeletionDialog =
             ConfirmDeletionDialog().apply {
                 arguments = Bundle().apply {
                     putString(ELEMENT, element)
@@ -24,7 +24,7 @@ class ConfirmDeletionDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val element = arguments?.getString(ELEMENT)!!
+        val element = arguments?.getString(ELEMENT)
         val view = LayoutInflater.from(activity).inflate(R.layout.dialog_confirm_deletion, null)
 
         val dialog = AlertDialog.Builder(activity)

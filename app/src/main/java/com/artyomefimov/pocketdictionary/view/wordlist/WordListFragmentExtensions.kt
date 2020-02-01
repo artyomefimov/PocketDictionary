@@ -25,7 +25,7 @@ internal fun WordListFragment.initViewModel(): WordListViewModel {
     )[WordListViewModel::class.java]
 }
 
-internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRecord) {
+internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRecord?) {
     if (this.activity != null) {
         val mainActivity = this.activity as MainActivity
         mainActivity.replaceFragment(WordFragment.newInstance(dictionaryRecord))
@@ -41,7 +41,7 @@ internal fun WordListFragment.loadDictionary() {
     viewModel.loadDictionary()
 }
 
-internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>) {
+internal fun WordListFragment.showDictionary(dictionary: List<DictionaryRecord>?) {
     (recycler_view_word_list.adapter as WordListAdapter<DictionaryRecord>)
         .updateData(dictionary)
 }

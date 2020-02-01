@@ -7,7 +7,7 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
  * Handles view state and returns a new state according to a current state
  */
 class ViewStateController(
-    private val dictionaryRecord: DictionaryRecord
+    private val dictionaryRecord: DictionaryRecord?
 ) {
 
     private var currentState: ViewState =
@@ -18,12 +18,14 @@ class ViewStateController(
     }
 
     fun getInitialViewState(): ViewState {
-        return if (dictionaryRecord.originalWord.isEmpty()) {
-            currentState = ViewState.EditingState
-            currentState
-        } else {
-            currentState
-        }
+        dictionaryRecord?.let {
+            return if (it.originalWord.isEmpty()) {
+                currentState = ViewState.EditingState
+                currentState
+            } else {
+                currentState
+            }
+        } ?: return currentState
     }
 
     fun getNewState(): ViewState {

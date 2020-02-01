@@ -70,11 +70,11 @@ class WordListFragment : Fragment() {
         }
 
         viewModel.dictionaryLiveData.observe(this, Observer { dictionary ->
-            showDictionary(dictionary!!)
+            showDictionary(dictionary)
         })
 
         viewModel.messageLiveData.observe(this, Observer { messageResId ->
-            shortToast(messageResId!!)
+            shortToast(messageResId)
         })
 
         if (isPermissionsGranted(activity as Activity, needed_permissions)) {
@@ -89,9 +89,9 @@ class WordListFragment : Fragment() {
         inflater?.inflate(R.menu.menu_list_fragment, menu)
 
         val menuItem = menu?.findItem(R.id.action_search)
-        val searchView = menuItem?.actionView as SearchView
+        val searchView = menuItem?.actionView as? SearchView
 
-        menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+        menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean = true
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
@@ -100,7 +100,7 @@ class WordListFragment : Fragment() {
             }
         })
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.findRecords(query) {
                     showSearchResults(it)
@@ -128,7 +128,7 @@ class WordListFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 CONFIRM_DELETION_DIALOG_REQUEST_CODE ->
-                    viewModel.deleteDictionaryRecord(data?.getStringExtra(ELEMENT)!!) {
+                    viewModel.deleteDictionaryRecord(data?.getStringExtra(ELEMENT)) {
                         activity?.startService(
                             Intent(activity, StorageUpdateService::class.java)
                         )

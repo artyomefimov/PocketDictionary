@@ -22,8 +22,8 @@ import com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog.Comp
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.POSITION
 import com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog.Companion.TRANSLATION
-import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
+import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import kotlinx.android.synthetic.main.fragment_word.*
 
 class WordFragment : Fragment() {
@@ -31,7 +31,7 @@ class WordFragment : Fragment() {
         private const val DICTIONARY_RECORD = "dictionaryRecord"
 
         @JvmStatic
-        fun newInstance(dictionaryRecord: DictionaryRecord) =
+        fun newInstance(dictionaryRecord: DictionaryRecord?) =
             WordFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(DICTIONARY_RECORD, dictionaryRecord)
@@ -47,14 +47,18 @@ class WordFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val viewStateFromBundle = savedInstanceState?.getSerializable(VIEW_STATE)
-        initialViewState = if (viewStateFromBundle != null) {
+        initialViewState = if (viewStateFromBundle != null)
             viewStateFromBundle as ViewState
-        } else ViewState.StableState
+        else ViewState.StableState
 
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewModel = initViewModel(DICTIONARY_RECORD)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_word, container, false)
@@ -70,13 +74,13 @@ class WordFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.menu_word_fragment, menu)
 
-        val editItem = menu?.findItem(R.id.action_edit)!!
+        val editItem = menu?.findItem(R.id.action_edit)
         viewModel.getInitialViewState().apply {
             initialViewState = this
             applyNewStateFor(this, editItem, original_word_text)
         }
 
-        editItem.setOnMenuItemClickListener {
+        editItem?.setOnMenuItemClickListener {
             viewModel.getNewState(original_word_text.text.toString()).apply {
                 initialViewState = this
                 applyNewStateFor(this, editItem, original_word_text)
@@ -84,8 +88,8 @@ class WordFragment : Fragment() {
             return@setOnMenuItemClickListener true
         }
 
-        val undoItem = menu.findItem(R.id.action_undo)!!
-        undoItem.setOnMenuItemClickListener {
+        val undoItem = menu?.findItem(R.id.action_undo)
+        undoItem?.setOnMenuItemClickListener {
             viewModel.undoChanges().apply {
                 applyNewStateFor(this, editItem, original_word_text)
             }
@@ -107,7 +111,7 @@ class WordFragment : Fragment() {
                 onLongClickAction = { translation ->
                     showDialog<ConfirmDeletionDialog>(translation, -1)
                 },
-                onTranslationChecked = { translation->
+                onTranslationChecked = { translation ->
                     viewModel.updateFavoriteTranslations(translation)
                 })
 
@@ -125,11 +129,11 @@ class WordFragment : Fragment() {
         })
 
         viewModel.toastMessageLiveData.observe(this, Observer { messageResId ->
-            shortToast(messageResId!!)
+            shortToast(messageResId)
         })
 
         viewModel.snackbarMessageLiveData.observe(this, Observer { messageAndChangedWord ->
-            snackbar(messageAndChangedWord!!) {changedWord ->
+            snackbar(messageAndChangedWord) { changedWord ->
                 viewModel.loadOriginalWordTranslation(
                     changedWord,
                     LanguagePairs.FromEnglishToRussian
@@ -148,7 +152,7 @@ class WordFragment : Fragment() {
                     )
                 CONFIRM_DELETION_DIALOG_REQUEST_CODE ->
                     viewModel.deleteTranslation(
-                        data?.getStringExtra(ELEMENT)!!
+                        data?.getStringExtra(ELEMENT)
                     )
             }
         }

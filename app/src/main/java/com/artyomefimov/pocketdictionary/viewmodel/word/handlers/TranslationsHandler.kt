@@ -14,8 +14,8 @@ class TranslationsHandler {
     }
 
     fun deleteTranslation(
-        translation: String,
-        translationsLiveDataValue: List<String>
+        translation: String?,
+        translationsLiveDataValue: List<String>?
     ): MutableList<String> {
         val mutableTranslations = getMutableListOf(translationsLiveDataValue)
         mutableTranslations.remove(translation)
@@ -26,26 +26,28 @@ class TranslationsHandler {
     fun handleNewTranslationOnPosition(
         changedTranslation: String?,
         position: Int?,
-        translationsLiveDataValue: List<String>
+        translationsLiveDataValue: List<String>?
     ): MutableList<String> {
         val mutableTranslations = getMutableListOf(translationsLiveDataValue)
 
         return if (NEW_TRANSLATION_POSITION == position)
-            addTranslation(changedTranslation!!, mutableTranslations)
+            addTranslation(changedTranslation, mutableTranslations)
         else
             changeTranslation(changedTranslation, position, mutableTranslations)
     }
 
     @Throws(DuplicateTranslationException::class)
     fun addTranslation(
-        translation: String,
+        translation: String?,
         mutableTranslations: MutableList<String>
     ): MutableList<String> {
-        if (isNewTranslationNotDuplicate(translation, mutableTranslations))
-            mutableTranslations.add(translation)
-        else
-            throw DuplicateTranslationException()
-        return mutableTranslations
+        translation?.let {
+            if (isNewTranslationNotDuplicate(translation, mutableTranslations))
+                mutableTranslations.add(translation)
+            else
+                throw DuplicateTranslationException()
+            return mutableTranslations
+        } ?: return mutableTranslations
     }
 
     private fun isNewTranslationNotDuplicate(translation: String, mutableTranslations: MutableList<String>) =
@@ -56,12 +58,14 @@ class TranslationsHandler {
         position: Int?,
         mutableTranslations: MutableList<String>
     ): MutableList<String> {
-        if (isReceivedDataValid(changedTranslation, position)) {
-            mutableTranslations[position!!] = changedTranslation!!
-        } else {
-            Log.d(TAG, "Invalid translation $changedTranslation and position $position")
-        }
-        return mutableTranslations
+        changedTranslation?.let {
+            if (isReceivedDataValid(changedTranslation, position)) {
+                mutableTranslations[position!!] = changedTranslation
+            } else {
+                Log.d(TAG, "Invalid translation $changedTranslation and position $position")
+            }
+            return mutableTranslations
+        } ?: return mutableTranslations
     }
 
     private fun isReceivedDataValid(changedTranslation: String?, position: Int?) =

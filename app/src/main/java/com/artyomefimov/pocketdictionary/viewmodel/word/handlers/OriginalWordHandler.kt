@@ -8,7 +8,7 @@ import com.artyomefimov.pocketdictionary.utils.isLatinInputIncorrect
  * Handles changes of the original word by comparing its old and new versions
  */
 class OriginalWordHandler(private val repository: Repository) {
-    fun handle(changedWord: String, originalWord: String): Result {
+    fun handle(changedWord: String, originalWord: String?): Result {
         return when {
             isLatinInputIncorrect(changedWord) ->
                 Result.LatinInputIncorrect(R.string.incorrect_original_word, ViewState.EditingState)
@@ -21,12 +21,12 @@ class OriginalWordHandler(private val repository: Repository) {
         }
     }
 
-    private fun isWordNotChanged(changedWord: String, originalWord: String): Boolean =
+    private fun isWordNotChanged(changedWord: String, originalWord: String?): Boolean =
         changedWord == originalWord
 
     private fun isDuplicate(changedWord: String): Boolean =
-        repository.getDictionaryRecord(changedWord)
-            .originalWord.isNotEmpty()
+        repository
+            .getDictionaryRecord(changedWord)?.originalWord?.isNotEmpty() ?: false
 }
 
 sealed class Result {

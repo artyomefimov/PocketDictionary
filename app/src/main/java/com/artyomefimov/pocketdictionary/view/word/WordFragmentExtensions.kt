@@ -11,7 +11,7 @@ import com.artyomefimov.pocketdictionary.viewmodel.word.handlers.ViewState
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel
 
 internal fun WordFragment.initViewModel(bundleKey: String): WordViewModel {
-    val dictionaryRecord = arguments?.getSerializable(bundleKey) as DictionaryRecord
+    val dictionaryRecord = arguments?.getSerializable(bundleKey) as? DictionaryRecord
     val repository = PocketDictionaryApplication.repository(activity as Context)
 
     return ViewModelProviders.of(
@@ -20,8 +20,8 @@ internal fun WordFragment.initViewModel(bundleKey: String): WordViewModel {
     )[WordViewModel::class.java]
 }
 
-internal fun applyNewStateFor(viewState: ViewState, editItem: MenuItem, originalWordText: EditText) =
+internal fun applyNewStateFor(viewState: ViewState, editItem: MenuItem?, originalWordText: EditText) =
     viewState.apply {
-        editItem.setIcon(menuIcon)
+        editItem?.setIcon(menuIcon)
         originalWordText.isEnabled = isEnabled
     }
