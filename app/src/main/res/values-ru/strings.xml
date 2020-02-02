@@ -23,4 +23,7 @@
     <string name="api_request_error">Невозможно загрузить перевод. Вы можете добавлять переводы вручную</string>
     <string name="duplicate_translation">Такой перевод уже есть</string>
     <string name="is_api_request_needed">Перевести измененное слово?</string>
+    <string name="original_word_hint">Введите слово для перевода…</string>
+    <string name="original_word_label">Исходное слово</string>
+    <string name="translations_label">Перевод</string>
 </resources>

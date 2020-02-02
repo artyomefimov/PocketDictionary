@@ -22,4 +22,7 @@
     <string name="api_request_error">Could not load translation! You can add translations by yourself</string>
     <string name="duplicate_translation">Such translation already exists</string>
     <string name="is_api_request_needed">Do you want to translate changed word?</string>
+    <string name="original_word_hint">Type an original word…</string>
+    <string name="original_word_label">Original word</string>
+    <string name="translations_label">Translation</string>
 </resources>
