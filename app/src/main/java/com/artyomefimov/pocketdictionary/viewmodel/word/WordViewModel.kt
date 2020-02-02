@@ -15,9 +15,7 @@ import io.reactivex.disposables.Disposable
 class WordViewModel(
     private val dictionaryRecord: DictionaryRecord?,
     private val repository: Repository,
-    private val viewStateController: ViewStateController = ViewStateController(
-        dictionaryRecord
-    ),
+    private val viewStateController: ViewStateController = ViewStateController(),
     private val translationsHandler: TranslationsHandler = TranslationsHandler(),
     private val originalWordHandler: OriginalWordHandler = OriginalWordHandler(repository),
     var currentFavoriteTranslations: MutableList<String> = getMutableListOf(dictionaryRecord?.favoriteTranslations),
@@ -68,7 +66,7 @@ class WordViewModel(
     }
 
     fun getInitialViewState(): ViewState =
-        viewStateController.getInitialViewState()
+        viewStateController.getInitialViewState(dictionaryRecord)
 
 
     fun getNewState(changedWord: String): ViewState {

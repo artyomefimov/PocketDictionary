@@ -3,7 +3,9 @@ package com.artyomefimov.pocketdictionary.storage
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import java.util.*
+import javax.inject.Singleton
 
+@Singleton
 class LocalStorage(
     var localDictionaryRecords: MutableMap<String, DictionaryRecord> = TreeMap()
 ) {

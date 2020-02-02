@@ -5,14 +5,14 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RepositoryModule::class, NetworkModule::class])
+@Component(modules = [RepositoryModule::class, TranslateModule::class])
 interface ApplicationComponent {
     fun inject(application: PocketDictionaryApplication)
 
     @Component.Builder
     interface Builder {
         fun build(): ApplicationComponent
-        fun networkModule(networkModule: NetworkModule): Builder
-        fun storageModule(storageModule: RepositoryModule): Builder
+        fun networkModule(networkModule: TranslateModule): Builder
+        fun storageModule(repositoryModule: RepositoryModule): Builder
     }
 }

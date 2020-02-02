@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.artyomefimov.pocketdictionary.di.application.ApplicationComponent
 import com.artyomefimov.pocketdictionary.di.application.DaggerApplicationComponent
-import com.artyomefimov.pocketdictionary.di.application.NetworkModule
 import com.artyomefimov.pocketdictionary.di.application.RepositoryModule
+import com.artyomefimov.pocketdictionary.di.application.TranslateModule
 import com.artyomefimov.pocketdictionary.repository.Repository
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class PocketDictionaryApplication : Application() {
     lateinit var repository: Repository
     private val component: ApplicationComponent by lazy {
         DaggerApplicationComponent.builder()
-            .networkModule(NetworkModule)
+            .networkModule(TranslateModule)
             .storageModule(RepositoryModule)
             .build()
     }

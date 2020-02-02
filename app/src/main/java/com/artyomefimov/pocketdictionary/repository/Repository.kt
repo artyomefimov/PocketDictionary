@@ -21,7 +21,7 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(
     private val translateApi: TranslateApi,
-    private val localStorage: LocalStorage = LocalStorage(),
+    private val localStorage: LocalStorage,
     private val localFile: File = File(LOCAL_STORAGE_PATH)
 ) {
 

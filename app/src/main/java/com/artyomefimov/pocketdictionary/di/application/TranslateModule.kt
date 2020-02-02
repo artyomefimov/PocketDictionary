@@ -15,17 +15,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-object NetworkModule {
-
+object TranslateModule {
     @Provides
     @Singleton
-    @JvmStatic
     fun provideTranslateApi(retrofit: Retrofit): TranslateApi =
         retrofit.create(TranslateApi::class.java)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideRetrofit(): Retrofit {
         val gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
