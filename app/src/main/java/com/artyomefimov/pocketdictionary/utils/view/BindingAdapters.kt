@@ -1,10 +1,10 @@
 package com.artyomefimov.pocketdictionary.utils.view
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import android.content.ContextWrapper
-import android.databinding.BindingAdapter
-import android.support.v4.app.Fragment
+import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.view.MainActivity

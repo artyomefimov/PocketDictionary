@@ -1,8 +1,8 @@
 package com.artyomefimov.pocketdictionary.utils.view
 
 import android.content.Intent
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_TAG
 import com.artyomefimov.pocketdictionary.EDIT_TRANSLATION_DIALOG_REQUEST_CODE
@@ -39,5 +39,5 @@ fun Fragment.configureAndShowDialog(dialog: DialogFragment, requestCode: Int, ta
         this,
         requestCode
     )
-    dialog.show(fragmentManager, tag)
+    dialog.show(parentFragmentManager, tag)
 }

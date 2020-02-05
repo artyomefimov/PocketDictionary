@@ -2,15 +2,15 @@
 
 package com.artyomefimov.pocketdictionary.view.wordlist
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.view.adapters.WordListAdapter
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.utils.view.longToast
 import com.artyomefimov.pocketdictionary.view.MainActivity
+import com.artyomefimov.pocketdictionary.view.adapters.WordListAdapter
 import com.artyomefimov.pocketdictionary.view.needed_permissions
 import com.artyomefimov.pocketdictionary.view.word.WordFragment
 import com.artyomefimov.pocketdictionary.viewmodel.factory.WordListViewModelFactory
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_list_words.*
 
 internal fun WordListFragment.initViewModel(): WordListViewModel {
     val repository = PocketDictionaryApplication.repository(activity as Context)
-    return ViewModelProviders.of(
+    return ViewModelProvider(
         this,
         WordListViewModelFactory(repository)
     )[WordListViewModel::class.java]

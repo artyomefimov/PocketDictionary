@@ -1,12 +1,12 @@
 package com.artyomefimov.pocketdictionary.view.word
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import com.artyomefimov.pocketdictionary.*
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
@@ -70,11 +70,11 @@ class WordFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_word_fragment, menu)
+        inflater.inflate(R.menu.menu_word_fragment, menu)
 
-        val editItem = menu?.findItem(R.id.action_edit)
+        val editItem = menu.findItem(R.id.action_edit)
         viewModel.getInitialViewState().apply {
             initialViewState = this
             applyNewStateFor(this, editItem, original_word_text)
@@ -88,7 +88,7 @@ class WordFragment : Fragment() {
             return@setOnMenuItemClickListener true
         }
 
-        val undoItem = menu?.findItem(R.id.action_undo)
+        val undoItem = menu.findItem(R.id.action_undo)
         undoItem?.setOnMenuItemClickListener {
             viewModel.undoChanges().apply {
                 applyNewStateFor(this, editItem, original_word_text)
@@ -102,7 +102,8 @@ class WordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_view_translations.layoutManager = LinearLayoutManager(this.activity)
+        recycler_view_translations.layoutManager =
+            LinearLayoutManager(this.activity)
         recycler_view_translations.adapter =
             TranslationsAdapter<String>(ArrayList(), viewModel.currentFavoriteTranslations,
                 onClickAction = { translation, position ->
@@ -119,20 +120,20 @@ class WordFragment : Fragment() {
             showDialog<EditTranslationDialog>("", NEW_TRANSLATION_POSITION)
         }
 
-        viewModel.originalWordLiveData.observe(this, Observer { originalWord ->
+        viewModel.originalWordLiveData.observe(viewLifecycleOwner, Observer { originalWord ->
             original_word_text.setText(originalWord ?: "")
         })
 
-        viewModel.translationsLiveData.observe(this, Observer { translations ->
+        viewModel.translationsLiveData.observe(viewLifecycleOwner, Observer { translations ->
             (recycler_view_translations.adapter as TranslationsAdapter<String>)
                 .updateData(translations ?: listOf())
         })
 
-        viewModel.toastMessageLiveData.observe(this, Observer { messageResId ->
+        viewModel.toastMessageLiveData.observe(viewLifecycleOwner, Observer { messageResId ->
             shortToast(messageResId)
         })
 
-        viewModel.snackbarMessageLiveData.observe(this, Observer { messageAndChangedWord ->
+        viewModel.snackbarMessageLiveData.observe(viewLifecycleOwner, Observer { messageAndChangedWord ->
             snackbar(messageAndChangedWord) { changedWord ->
                 viewModel.loadOriginalWordTranslation(
                     changedWord,

@@ -2,8 +2,8 @@
 
 package com.artyomefimov.pocketdictionary.viewmodel.factory
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.viewmodel.word.WordViewModel

@@ -1,7 +1,7 @@
 package com.artyomefimov.pocketdictionary.utils.view
 
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.widget.Toast
 
 fun Fragment.shortToast(messageResId: Int?) {

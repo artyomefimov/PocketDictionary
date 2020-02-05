@@ -1,14 +1,14 @@
 package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.SearchView
 import android.view.*
 import com.artyomefimov.pocketdictionary.CONFIRM_DELETION_DIALOG_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
@@ -55,7 +55,8 @@ class WordListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_view_word_list.layoutManager = LinearLayoutManager(this.activity)
+        recycler_view_word_list.layoutManager =
+            LinearLayoutManager(this.activity)
         recycler_view_word_list.adapter =
             WordListAdapter<DictionaryRecord>(ArrayList(),
                 onClickAction = { dictionaryRecord ->
@@ -69,11 +70,11 @@ class WordListFragment : Fragment() {
             openWordFragmentFor(DictionaryRecord())
         }
 
-        viewModel.dictionaryLiveData.observe(this, Observer { dictionary ->
+        viewModel.dictionaryLiveData.observe(viewLifecycleOwner, Observer { dictionary ->
             showDictionary(dictionary)
         })
 
-        viewModel.messageLiveData.observe(this, Observer { messageResId ->
+        viewModel.messageLiveData.observe(viewLifecycleOwner, Observer { messageResId ->
             shortToast(messageResId)
         })
 
@@ -84,11 +85,11 @@ class WordListFragment : Fragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_list_fragment, menu)
+        inflater.inflate(R.menu.menu_list_fragment, menu)
 
-        val menuItem = menu?.findItem(R.id.action_search)
+        val menuItem = menu.findItem(R.id.action_search)
         val searchView = menuItem?.actionView as? SearchView
 
         menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
