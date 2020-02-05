@@ -1,50 +1,37 @@
 package com.artyomefimov.pocketdictionary.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.artyomefimov.pocketdictionary.R
-import com.artyomefimov.pocketdictionary.view.wordlist.WordListFragment
 
-class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
-
+class MainActivity : AppCompatActivity() {
+    //private lateinit var appBarConfiguration: AppBarConfiguration
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager.addOnBackStackChangedListener(this)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        var listFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+//        appBarConfiguration = AppBarConfiguration.Builder().build()
+//        setupActionBarWithNavController(findNavController(R.id.nav_host_fragment), appBarConfiguration) // todo не работает, jvm 1.6 -> 1.8
+    }
 
-        if (listFragment == null) {
-            listFragment = WordListFragment.newInstance()
-            supportFragmentManager.beginTransaction().apply {
-                add(R.id.fragment_container, listFragment)
-                commit()
-            }
+    private fun isShouldDisplayHomeUp(): Boolean { // todo
+        findNavController(R.id.nav_host_fragment).apply {
+            return graph.startDestination != currentDestination?.id
         }
     }
 
-    fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, fragment)
-            addToBackStack(null)
-            commit()
-        }
+    override fun onBackPressed() {
+        //supportActionBar?.setDisplayHomeAsUpEnabled(isShouldDisplayHomeUp())
+        super.onBackPressed()
     }
 
-    override fun onBackStackChanged() {
-        isShouldDisplayHomeUp()
-    }
-
-    private fun isShouldDisplayHomeUp() {
-        val canGoBack = supportFragmentManager.backStackEntryCount > 0
-        supportActionBar?.setDisplayHomeAsUpEnabled(canGoBack)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        supportFragmentManager.popBackStack()
-        return false
-    }
+    override fun onSupportNavigateUp(): Boolean =
+        findNavController(R.id.nav_host_fragment).navigateUp() ||
+                super.onSupportNavigateUp()
 }

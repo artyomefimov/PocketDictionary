@@ -4,6 +4,7 @@ package com.artyomefimov.pocketdictionary.view.wordlist
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.artyomefimov.pocketdictionary.PERMISSIONS_REQUEST_CODE
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 import com.artyomefimov.pocketdictionary.R
@@ -26,10 +27,9 @@ internal fun WordListFragment.initViewModel(): WordListViewModel {
 }
 
 internal fun WordListFragment.openWordFragmentFor(dictionaryRecord: DictionaryRecord?) {
-    if (this.activity != null) {
-        val mainActivity = this.activity as MainActivity
-        mainActivity.replaceFragment(WordFragment.newInstance(dictionaryRecord))
-    }
+    val action = WordListFragmentDirections
+        .actionWordListFragmentToWordFragment(dictionaryRecord)
+    findNavController().navigate(action)
 }
 
 internal fun WordListFragment.showSearchResults(searchResult: List<DictionaryRecord>) {
