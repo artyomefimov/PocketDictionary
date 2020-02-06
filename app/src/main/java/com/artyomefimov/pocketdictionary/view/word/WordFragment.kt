@@ -1,13 +1,13 @@
 package com.artyomefimov.pocketdictionary.view.word
 
 import android.app.Activity
-import androidx.lifecycle.Observer
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.artyomefimov.pocketdictionary.*
 import com.artyomefimov.pocketdictionary.databinding.FragmentWordBindingImpl
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
@@ -133,14 +133,16 @@ class WordFragment : Fragment() {
             shortToast(messageResId)
         })
 
-        viewModel.snackbarMessageLiveData.observe(viewLifecycleOwner, Observer { messageAndChangedWord ->
-            snackbar(messageAndChangedWord) { changedWord ->
-                viewModel.loadOriginalWordTranslation(
-                    changedWord,
-                    LanguagePairs.FromEnglishToRussian
-                )
-            }
-        })
+        viewModel.snackbarMessageLiveData.observe(
+            viewLifecycleOwner,
+            Observer { messageAndChangedWord ->
+                snackbar(messageAndChangedWord) { changedWord ->
+                    viewModel.loadOriginalWordTranslation(
+                        changedWord,
+                        LanguagePairs.FromEnglishToRussian
+                    )
+                }
+            })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -160,12 +162,10 @@ class WordFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        activity?.startService(
+            Intent(activity, StorageUpdateService::class.java)
+        )
         super.onDestroy()
-        viewModel.updateDictionary {
-            activity?.startService(
-                Intent(activity, StorageUpdateService::class.java)
-            )
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

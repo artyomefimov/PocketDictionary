@@ -1,7 +1,12 @@
 package com.artyomefimov.pocketdictionary.model
 
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
+data class Dictionary(
+    val localDictionaryRecords: MutableMap<String, DictionaryRecord> = TreeMap()
+)
 /**
  * Model class that describes original word, its translations and favorite translations
  */

@@ -1,15 +1,20 @@
 package com.artyomefimov.pocketdictionary.repository
 
-import com.artyomefimov.pocketdictionary.LOCAL_STORAGE_PATH
+import android.content.SharedPreferences
+import android.util.Log
+import com.artyomefimov.pocketdictionary.DICTIONARY_KEY
 import com.artyomefimov.pocketdictionary.api.TranslateApi
+import com.artyomefimov.pocketdictionary.model.Dictionary
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.model.Response
 import com.artyomefimov.pocketdictionary.storage.LocalStorage
 import com.artyomefimov.pocketdictionary.utils.LanguagePairs
+import com.artyomefimov.pocketdictionary.utils.genericType
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.io.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,7 +27,8 @@ import javax.inject.Singleton
 class Repository @Inject constructor(
     private val translateApi: TranslateApi,
     private val localStorage: LocalStorage,
-    private val localFile: File = File(LOCAL_STORAGE_PATH)
+    private val gson: Gson,
+    private val tag: String = Repository::javaClass.name
 ) {
 
     fun getTranslation(originalWord: String, languagesPair: LanguagePairs): Single<Response> =
@@ -30,8 +36,8 @@ class Repository @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
-    @Suppress("UNCHECKED_CAST")
-    fun getDictionary(): Single<ArrayList<DictionaryRecord>> {
+    @Throws(ReadDictionaryException::class)
+    fun getDictionary(sharedPreferences: SharedPreferences?): Single<ArrayList<DictionaryRecord>> {
         if (localStorage.localDictionaryRecords.isNotEmpty()) {
             return Single.fromCallable {
                 return@fromCallable ArrayList(localStorage.localDictionaryRecords.values)
@@ -40,7 +46,8 @@ class Repository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
         } else {
             return Single.fromCallable {
-                readDictionaryFromLocalFile()
+                val dictionary = readDictionaryFromLocalFile(sharedPreferences)
+                localStorage.localDictionaryRecords = dictionary.localDictionaryRecords
                 return@fromCallable ArrayList(localStorage.localDictionaryRecords.values)
             }
                 .subscribeOn(Schedulers.io())
@@ -48,20 +55,28 @@ class Repository @Inject constructor(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun readDictionaryFromLocalFile() {
-        if (!localFile.exists())
-            localFile.createNewFile()
+    @Throws(ReadDictionaryException::class)
+    private fun readDictionaryFromLocalFile(sharedPreferences: SharedPreferences?): Dictionary {
+        val dictionaryJson = sharedPreferences?.getString(DICTIONARY_KEY, "") ?: return Dictionary()
+        Log.i(tag, "Read json string: $dictionaryJson")
+        if (dictionaryJson.isEmpty())
+            return Dictionary()
 
-        ObjectInputStream(FileInputStream(localFile)).use {
-            localStorage.localDictionaryRecords = it.readObject() as TreeMap<String, DictionaryRecord>
+        try {
+            return gson.fromJson<Dictionary>(dictionaryJson, genericType<Dictionary>())
+        } catch (e: JsonSyntaxException) {
+            Log.e(tag, e.message, e)
+            throw ReadDictionaryException()
         }
     }
 
-    fun saveDictionary() =
-        ObjectOutputStream(FileOutputStream(LOCAL_STORAGE_PATH)).use {
-            it.writeObject(localStorage.localDictionaryRecords)
+    fun saveDictionary(sharedPreferences: SharedPreferences) {
+        val dictionary = gson.toJson(Dictionary(localStorage.localDictionaryRecords))
+        sharedPreferences.edit().apply {
+            putString(DICTIONARY_KEY, dictionary)
+            apply()
         }
+    }
 
     fun updateDictionaryRecord(oldRecord: DictionaryRecord?, newRecord: DictionaryRecord): Boolean =
         performUpdate(this, oldRecord, newRecord)

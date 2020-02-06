@@ -1,8 +1,10 @@
 package com.artyomefimov.pocketdictionary.services
 
 import android.app.IntentService
+import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.artyomefimov.pocketdictionary.LOCAL_STORAGE_PATH
 import com.artyomefimov.pocketdictionary.PocketDictionaryApplication
 
 /**
@@ -18,7 +20,8 @@ class StorageUpdateService : IntentService(TAG) {
             return
 
         try {
-            PocketDictionaryApplication.repository(this).saveDictionary()
+            PocketDictionaryApplication.repository(this).saveDictionary(
+                getSharedPreferences(LOCAL_STORAGE_PATH, Context.MODE_PRIVATE))
         } catch (e: Exception) {
             Log.e(TAG, "Could not save dictionary to file", e)
         }

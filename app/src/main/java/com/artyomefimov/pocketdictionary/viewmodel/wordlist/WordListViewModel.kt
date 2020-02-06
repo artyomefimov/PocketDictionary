@@ -1,16 +1,16 @@
 package com.artyomefimov.pocketdictionary.viewmodel.wordlist
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
 import com.artyomefimov.pocketdictionary.utils.getMutableListOf
 import com.artyomefimov.pocketdictionary.utils.search
 import io.reactivex.disposables.Disposable
-import java.io.EOFException
 
 class WordListViewModel(
     private val repository: Repository,
@@ -25,8 +25,8 @@ class WordListViewModel(
 
     private lateinit var subscription: Disposable
 
-    fun loadDictionary() {
-        subscription = repository.getDictionary()
+    fun loadDictionary(sharedPreferences: SharedPreferences?) {
+        subscription = repository.getDictionary(sharedPreferences)
             .doOnSubscribe { loadingVisibility.value = View.VISIBLE }
             .subscribe(
                 { dictionaryRecords ->
@@ -37,8 +37,7 @@ class WordListViewModel(
                 {
                     loadingVisibility.value = View.GONE
                     Log.e(TAG, "Exception during dictionary loading: ", it)
-                    if (it !is EOFException)
-                        messageLiveData.value = R.string.local_loading_error
+                    messageLiveData.value = R.string.local_loading_error
                 })
     }
 

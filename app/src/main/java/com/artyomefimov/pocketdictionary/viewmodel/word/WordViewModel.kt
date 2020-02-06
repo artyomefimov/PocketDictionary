@@ -1,8 +1,8 @@
 package com.artyomefimov.pocketdictionary.viewmodel.word
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.view.View
 import com.artyomefimov.pocketdictionary.R
 import com.artyomefimov.pocketdictionary.model.DictionaryRecord
 import com.artyomefimov.pocketdictionary.repository.Repository
@@ -33,8 +33,10 @@ class WordViewModel(
 
     private var subscription: Disposable? = null
 
-    fun updateFavoriteTranslations(translation: String?) =
+    fun updateFavoriteTranslations(translation: String?) {
         updateFavoriteTranslation(currentFavoriteTranslations, translation)
+        updateDictionary()
+    }
 
     fun handleNewTranslationOnPosition(changedTranslation: String?, position: Int?) {
         try {
@@ -43,6 +45,7 @@ class WordViewModel(
                 position = position,
                 translationsLiveDataValue = translationsLiveData.value
             )
+            updateDictionary()
         } catch (e: DuplicateTranslationException) {
             toastMessageLiveData.value = R.string.duplicate_translation
         }
@@ -54,6 +57,7 @@ class WordViewModel(
             translationsLiveDataValue = translationsLiveData.value
         )
         currentFavoriteTranslations.remove(translation)
+        updateDictionary()
     }
 
     fun undoChanges(): ViewState {
@@ -78,10 +82,11 @@ class WordViewModel(
     }
 
     private fun isOriginalWordUpdateWasFinished(newState: ViewState): Boolean =
-        newState == ViewState.STABLE_STATE
+        ViewState.STABLE_STATE == newState
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
-        when(val result = originalWordHandler.handle(changedWord, dictionaryRecord?.originalWord)) {
+        when (val result =
+            originalWordHandler.handle(changedWord, dictionaryRecord?.originalWord)) {
             is Result.LatinInputIncorrect -> {
                 toastMessageLiveData.value = result.messageResId
                 return result.viewState
@@ -97,6 +102,7 @@ class WordViewModel(
             is Result.OriginalWordCorrectlyChanged -> {
                 originalWordLiveData.value = result.changedWord
                 snackbarMessageLiveData.value = result.snackbarMessageResId to result.changedWord
+                updateDictionary()
 
                 return result.viewState
             }
@@ -119,7 +125,9 @@ class WordViewModel(
                             translation = response.responseData.translatedText,
                             mutableTranslations = getMutableListOf(translationsLiveData.value)
                         )
-                    } catch (e: DuplicateTranslationException) { }
+                        updateDictionary()
+                    } catch (e: DuplicateTranslationException) {
+                    }
                 },
                 {
                     loadingVisibility.value = View.GONE
@@ -127,15 +135,13 @@ class WordViewModel(
                 })
     }
 
-    fun updateDictionary(callUpdateService: () -> Unit) {
+    private fun updateDictionary() {
         val updatedDictionaryRecord = DictionaryRecord(
             originalWordLiveData.value ?: dictionaryRecord?.originalWord ?: "",
             translationsLiveData.value ?: dictionaryRecord?.translations ?: ArrayList(),
             currentFavoriteTranslations
         )
-        val isUpdated = repository.updateDictionaryRecord(dictionaryRecord, updatedDictionaryRecord)
-        if (isUpdated)
-            callUpdateService()
+        repository.updateDictionaryRecord(dictionaryRecord, updatedDictionaryRecord)
     }
 
     override fun onCleared() {

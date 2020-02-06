@@ -1,9 +1,8 @@
 package com.artyomefimov.pocketdictionary
 
-import com.artyomefimov.pocketdictionary.utils.EnvironmentHelper
-
 const val BASE_URL = "https://api.mymemory.translated.net"
-val LOCAL_STORAGE_PATH = "${EnvironmentHelper.getExternalStorageDirectory()}/pocketdictionary.backup"
+const val LOCAL_STORAGE_PATH = "pocketdictionary_backup"
+const val DICTIONARY_KEY = "dictionary"
 
 const val CONFIRM_DELETION_DIALOG_TAG = "confirm_deletion_dialog"
 const val EDIT_TRANSLATION_DIALOG_TAG = "edit_translation_dialog"

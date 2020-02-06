@@ -44,9 +44,6 @@ class LocalStorage(
         }
 
     fun removeDictionaryRecord(originalWord: String?) {
-        if (isNoSuchWordInDictionary(originalWord))
-            return
-
         localDictionaryRecords.remove(originalWord)
     }
 
