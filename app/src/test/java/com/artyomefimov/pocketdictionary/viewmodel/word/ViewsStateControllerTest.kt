@@ -10,28 +10,28 @@ class ViewsStateControllerTest {
     @Test
     fun testGetEditingStateInCaseOfEmptyOriginalWord() {
         val controller =
-            ViewStateController(DictionaryRecord())
+            ViewStateController()
 
-        assertEquals(ViewState.EditingState, controller.getInitialViewState())
+        assertEquals(ViewState.EDITING_STATE, controller.getInitialViewState(DictionaryRecord()))
     }
 
     @Test
     fun testGetStableStateInCaseOfNonEmptyOriginalWord() {
         val controller =
-            ViewStateController(DictionaryRecord("some word"))
+            ViewStateController()
 
-        assertEquals(ViewState.StableState, controller.getInitialViewState())
+        assertEquals(ViewState.STABLE_STATE, controller.getInitialViewState(DictionaryRecord("some word")))
     }
 
     @Test
     fun testGetDifferentViewStateEveryTime() {
         val controller =
-            ViewStateController(DictionaryRecord())
+            ViewStateController()
 
         val firstCallState = controller.getNewState()
         val secondCallState = controller.getNewState()
 
-        assertEquals(ViewState.EditingState, firstCallState)
-        assertEquals(ViewState.StableState, secondCallState)
+        assertEquals(ViewState.EDITING_STATE, firstCallState)
+        assertEquals(ViewState.STABLE_STATE, secondCallState)
     }
 }

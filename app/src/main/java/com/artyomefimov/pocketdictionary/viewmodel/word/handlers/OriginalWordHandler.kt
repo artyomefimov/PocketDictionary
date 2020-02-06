@@ -11,13 +11,13 @@ class OriginalWordHandler(private val repository: Repository) {
     fun handle(changedWord: String, originalWord: String?): Result {
         return when {
             isLatinInputIncorrect(changedWord) ->
-                Result.LatinInputIncorrect(R.string.incorrect_original_word, ViewState.EditingState)
+                Result.LatinInputIncorrect(R.string.incorrect_original_word, ViewState.EDITING_STATE)
             isWordNotChanged(changedWord, originalWord) ->
-                Result.OriginalWordNotChanged(ViewState.StableState)
+                Result.OriginalWordNotChanged(ViewState.STABLE_STATE)
             isDuplicate(changedWord) ->
-                Result.DuplicateOriginalWord(R.string.duplicate_original_word, ViewState.EditingState)
+                Result.DuplicateOriginalWord(R.string.duplicate_original_word, ViewState.EDITING_STATE)
             else ->
-                Result.OriginalWordCorrectlyChanged(R.string.is_api_request_needed, changedWord, ViewState.StableState)
+                Result.OriginalWordCorrectlyChanged(R.string.is_api_request_needed, changedWord, ViewState.STABLE_STATE)
         }
     }
 

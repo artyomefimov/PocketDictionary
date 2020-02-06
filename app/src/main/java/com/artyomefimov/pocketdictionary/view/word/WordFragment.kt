@@ -49,7 +49,7 @@ class WordFragment : Fragment() {
         val viewStateFromBundle = savedInstanceState?.getSerializable(VIEW_STATE)
         initialViewState = if (viewStateFromBundle != null)
             viewStateFromBundle as ViewState
-        else ViewState.StableState
+        else ViewState.STABLE_STATE
 
         setHasOptionsMenu(true)
     }

@@ -8,7 +8,7 @@ import com.artyomefimov.pocketdictionary.model.DictionaryRecord
  */
 class ViewStateController {
     private var currentState: ViewState =
-        ViewState.StableState
+        ViewState.STABLE_STATE
 
     fun setInitialViewState(viewState: ViewState) {
         currentState = viewState
@@ -17,7 +17,7 @@ class ViewStateController {
     fun getInitialViewState(dictionaryRecord: DictionaryRecord?): ViewState {
         dictionaryRecord?.let {
             return if (it.originalWord.isEmpty()) {
-                currentState = ViewState.EditingState
+                currentState = ViewState.EDITING_STATE
                 currentState
             } else {
                 currentState
@@ -26,11 +26,11 @@ class ViewStateController {
     }
 
     fun getNewState(): ViewState {
-        return if (currentState == ViewState.EditingState) {
-            currentState = ViewState.StableState
+        return if (currentState == ViewState.EDITING_STATE) {
+            currentState = ViewState.STABLE_STATE
             currentState
         } else {
-            currentState = ViewState.EditingState
+            currentState = ViewState.EDITING_STATE
             currentState
         }
     }
@@ -40,6 +40,6 @@ enum class ViewState(
     val menuIcon: Int,
     val isEnabled: Boolean
 ) {
-    EditingState(R.drawable.ic_action_edit_done, true),
-    StableState(R.drawable.ic_action_edit, false)
+    EDITING_STATE(R.drawable.ic_action_edit_done, true),
+    STABLE_STATE(R.drawable.ic_action_edit, false)
 }

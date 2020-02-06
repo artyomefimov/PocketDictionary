@@ -58,7 +58,7 @@ class WordViewModel(
 
     fun undoChanges(): ViewState {
         originalWordLiveData.value = dictionaryRecord?.originalWord
-        return ViewState.StableState
+        return ViewState.STABLE_STATE
     }
 
     fun setInitialViewState(viewState: ViewState) {
@@ -78,7 +78,7 @@ class WordViewModel(
     }
 
     private fun isOriginalWordUpdateWasFinished(newState: ViewState): Boolean =
-        newState == ViewState.StableState
+        newState == ViewState.STABLE_STATE
 
     private fun handleChangedOriginalWord(changedWord: String): ViewState {
         when(val result = originalWordHandler.handle(changedWord, dictionaryRecord?.originalWord)) {
