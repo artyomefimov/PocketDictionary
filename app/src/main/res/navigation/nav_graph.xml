@@ -26,33 +26,5 @@
                 android:name="dictionaryRecord"
                 app:argType="com.artyomefimov.pocketdictionary.model.DictionaryRecord"
                 app:nullable="true" />
-        <action
-                android:id="@+id/action_wordFragment_to_editTranslationDialog"
-                app:destination="@id/editTranslationDialog" />
-        <action
-                android:id="@+id/action_wordFragment_to_confirmDeletionDialog"
-                app:destination="@id/confirmDeletionDialog" />
-    </fragment>
-    <fragment
-            android:id="@+id/editTranslationDialog"
-            android:name="com.artyomefimov.pocketdictionary.view.dialogs.EditTranslationDialog"
-            android:label="EditTranslationDialog"
-            tools:layout="@layout/dialog_edit_translation">
-        <argument
-                android:name="translation"
-                app:argType="string" />
-        <argument
-                android:name="position"
-                app:argType="integer"
-                android:defaultValue="-1" />
-    </fragment>
-    <fragment
-            android:id="@+id/confirmDeletionDialog"
-            android:name="com.artyomefimov.pocketdictionary.view.dialogs.ConfirmDeletionDialog"
-            android:label="ConfirmDeletionDialog"
-            tools:layout="@layout/dialog_confirm_deletion">
-        <argument
-                android:name="translation"
-                app:argType="string" />
     </fragment>
 </navigation>

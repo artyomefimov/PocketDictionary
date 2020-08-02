@@ -34,7 +34,7 @@ class WordListAdapter<T>(
         holder.bind(data?.get(position), position, onLongClickAction)
 }
 
-private class WordListViewHolder<T>(
+class WordListViewHolder<T>(
     itemView: View,
     private val onClickAction: (DictionaryRecord?) -> Unit
 ) : AbstractViewHolder<T>(itemView) {

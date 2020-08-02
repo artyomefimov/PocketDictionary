@@ -16,14 +16,14 @@ class StorageUpdateService : IntentService(TAG) {
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        if (intent == null)
-            return
-
-        try {
-            PocketDictionaryApplication.repository(this).saveDictionary(
-                getSharedPreferences(LOCAL_STORAGE_PATH, Context.MODE_PRIVATE))
-        } catch (e: Exception) {
-            Log.e(TAG, "Could not save dictionary to file", e)
+        intent?.let {
+            try {
+                PocketDictionaryApplication.repository(this).saveDictionary(
+                    getSharedPreferences(LOCAL_STORAGE_PATH, Context.MODE_PRIVATE)
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Could not save dictionary to file", e)
+            }
         }
     }
 }

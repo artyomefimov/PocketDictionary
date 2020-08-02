@@ -89,7 +89,7 @@ class WordListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_list_fragment, menu)
 
-        val menuItem = menu.findItem(R.id.action_search)
+        val menuItem = menu.findItem(R.id.menu_action_search)
         val searchView = menuItem?.actionView as? SearchView
 
         menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {

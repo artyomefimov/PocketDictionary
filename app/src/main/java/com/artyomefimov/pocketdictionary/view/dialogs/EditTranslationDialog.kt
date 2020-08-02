@@ -51,15 +51,17 @@ class EditTranslationDialog : DialogFragment() {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val changedTranslation = editText.text.toString().trim()
 
-                if (isCyrillicInputCorrect(changedTranslation)) {
-                    sendResult(Activity.RESULT_OK,
-                        Intent().apply {
-                            putExtra(TRANSLATION, changedTranslation)
-                            putExtra(POSITION, position)
-                        })
-                    dialog.dismiss()
-                } else
-                    showErrorMessage()
+//                if (isCyrillicInputCorrect(changedTranslation)) {
+//
+//                } else
+//                    showErrorMessage()
+
+                sendResult(Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra(TRANSLATION, changedTranslation)
+                        putExtra(POSITION, position)
+                    })
+                dialog.dismiss()
             }
 
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
